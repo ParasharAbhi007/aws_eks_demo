@@ -38,7 +38,7 @@ template:
                           value: test1
                         - name: test2
                           type: String
-                          value: ""
+                          value: <+pipeline.executionId>
                       unstableStatusAsSuccess: false
                       useConnectorUrlForJobExecution: false
                     timeout: 10m
