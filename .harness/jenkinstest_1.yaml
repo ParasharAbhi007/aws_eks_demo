@@ -1,0 +1,59 @@
+template:
+  name: jenkinstest
+  identifier: jenkinstest
+  versionLabel: "1"
+  type: Pipeline
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  tags: {}
+  spec:
+    stages:
+      - stage:
+          name: test
+          identifier: test
+          description: ""
+          type: Deployment
+          spec:
+            deploymentType: Kubernetes
+            environment:
+              environmentRef: K8Env
+              deployToAll: false
+              infrastructureDefinitions:
+                - identifier: K8INFRA
+            service:
+              serviceRef: k8service
+            execution:
+              steps:
+                - step:
+                    type: JenkinsBuild
+                    name: JenkinsBuild_1
+                    identifier: JenkinsBuild_1
+                    spec:
+                      connectorRef: account.Jenkins
+                      consoleLogPollFrequency: 5s
+                      jobName: test
+                      jobParameter:
+                        - name: test1
+                          type: String
+                          value: test1
+                        - name: test2
+                          type: String
+                          value: test2
+                      unstableStatusAsSuccess: false
+                      useConnectorUrlForJobExecution: false
+                    timeout: 10m
+              rollbackSteps:
+                - step:
+                    name: Rollback Rollout Deployment
+                    identifier: rollbackRolloutDeployment
+                    type: K8sRollingRollback
+                    timeout: 10m
+                    spec:
+                      pruningEnabled: false
+          tags: {}
+          failureStrategies:
+            - onFailure:
+                errors:
+                  - AllErrors
+                action:
+                  type: StageRollback
