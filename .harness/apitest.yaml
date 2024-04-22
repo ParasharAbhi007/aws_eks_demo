@@ -132,4 +132,4 @@ pipeline:
         spec:
           userGroups: []
           webhookUrl: <+pipeline.variables.key>
-      enabled: true
+      enabled: false
