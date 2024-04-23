@@ -28,60 +28,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |-
-                          hostname -f
-                          cat /etc/os-release
-
-                          echo "trigger baseCommitSha <+trigger.baseCommitSha>"
-                          echo "trigger commitSha <+trigger.commitSha>"
-                          echo "trigger repoUrl <+trigger.repoUrl>"
-                          echo "trigger sourceBranch <+trigger.sourceBranch>"
-                          echo "trigger targetBranch <+trigger.targetBranch>"
-                          echo "payload.pull_request.merge_commit_sha <+trigger.payload.pull_request.merge_commit_sha>"
-                          echo "trigger.payload.pull_request.merged <+trigger.payload.pull_request.merged>"
-                          echo "DRONE_BUILD_PARENT=$DRONE_BUILD_PARENT"
-                          echo "========"
-                          env |sort
-                          echo "========"
-                          PWD_VAR="${PWD}"
-
-                          echo pipeline.triggeredBy.triggerIdentifier = <+pipeline.triggeredBy.triggerIdentifier> 
-                          echo pipeline.triggerType = <+pipeline.triggerType>
-                          echo pipeline.triggeredBy.name = <+pipeline.triggeredBy.name>
-                          echo trigger.header-X-GitHub-Event = <+trigger.header['X-GitHub-Event']>
-                          echo trigger.event = <+trigger.event>
-
-                          echo "===================="
-                          echo "===================="
-                          echo "===================="
-
-                          echo "foorrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
-                          echo <+trigger>
-
-                          for var in <+trigger>;
-                          do
-
-                              IFS=":"
-                              read -r key value <<< "$var"
-                              unset IFS
-                              echo "$key : $value"
-
-                          done
-
-                          echo "===================="
-                          echo "===================="
-                          echo "===================="
-
-
-                          for crumbs in <+trigger.payload>;
-                          do
-
-                              IFS=":"
-                              read -r crumbskey crumbsvalue <<< "$crumbs"
-                              unset IFS
-                              echo "$crumbskey : $crumbsvalue"
-
-                          done
+                        script: name=<+matrix.item>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
