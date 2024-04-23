@@ -73,7 +73,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+pipeline.variables.example>.split(",").[0]
+      value: <+<+pipeline.variables.example>.split(",").[0]>
     - name: example
       type: String
       description: ""
