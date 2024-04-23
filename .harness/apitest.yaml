@@ -71,7 +71,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: https://hooks.slack.com/services/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
+      value: <+pipeline.variables.example>.split(",").[0]
     - name: example
       type: String
       description: ""
