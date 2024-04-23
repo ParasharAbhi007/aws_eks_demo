@@ -30,7 +30,10 @@ pipeline:
                       spec:
                         script: name=<+matrix.item>
                     environmentVariables: []
-                    outputVariables: []
+                    outputVariables:
+                      - name: name
+                        type: String
+                        value: name
                   timeout: 10m
                   strategy:
                     matrix:
