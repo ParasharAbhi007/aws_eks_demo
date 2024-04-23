@@ -28,7 +28,9 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: name=<+matrix.jira>
+                        script: |-
+                          name=<+matrix.jira>
+                          echo <+pipeline.variables.value>
                     environmentVariables: []
                     outputVariables:
                       - name: name
