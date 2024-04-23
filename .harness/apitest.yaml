@@ -85,6 +85,9 @@ pipeline:
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
+                  strategy:
+                    matrix:
+                      jira: <+<+pipeline.variables.example>.split(',')[0]>
             rollbackSteps: []
           environments:
             metadata:
