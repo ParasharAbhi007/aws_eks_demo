@@ -97,10 +97,6 @@ pipeline:
                 deployToAll: false
                 infrastructureDefinitions:
                   - identifier: ee
-              - environmentRef: K8Env
-                deployToAll: false
-                infrastructureDefinitions:
-                  - identifier: K8INFRA
         tags: {}
         failureStrategies:
           - onFailure:
