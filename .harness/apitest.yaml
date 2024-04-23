@@ -5,6 +5,7 @@ pipeline:
   orgIdentifier: AbhiOrg
   tags:
     tag1: ""
+    <+pipeline.variables.fds>: ""
   stages:
     - stage:
         name: test
