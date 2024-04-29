@@ -29,8 +29,12 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
-                          name=<+matrix.jira>
-                          echo <+pipeline.variables.value>
+                          ## Install Azure CLI
+                          rpm --import https://packages.microsoft.com/keys/microsoft.asc
+                          rpm -ivh https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
+                          microdnf install -y azure-cli
+
+                          echo -e "[azure-cli]
                     environmentVariables: []
                     outputVariables:
                       - name: name
