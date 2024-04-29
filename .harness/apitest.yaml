@@ -40,6 +40,8 @@ pipeline:
                       - name: name
                         type: String
                         value: name
+                    delegateSelectors:
+                      - abhidelegate
                   timeout: 10m
                   strategy:
                     matrix:
