@@ -30,6 +30,7 @@ pipeline:
                       spec:
                         script: |
                           # Install Azure CLI using microdnf
+                          microdnf update
                           microdnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
                           microdnf install -y azure-cli
                     environmentVariables: []
