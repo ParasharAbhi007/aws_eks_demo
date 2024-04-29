@@ -29,10 +29,9 @@ pipeline:
                       type: Inline
                       spec:
                         script: |
-                          # Install Azure CLI
-                          sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-                          sudo rpm -ivh https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
-                          sudo microdnf install -y azure-cli
+                          # Install Azure CLI using microdnf
+                          microdnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
+                          microdnf install -y azure-cli
                     environmentVariables: []
                     outputVariables:
                       - name: name
