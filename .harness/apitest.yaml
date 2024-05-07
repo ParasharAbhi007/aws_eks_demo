@@ -15,7 +15,8 @@ pipeline:
         spec:
           deploymentType: Kubernetes
           service:
-            serviceRef: k8service
+            serviceRef: <+input>
+            serviceInputs: <+input>
           execution:
             steps:
               - step:
