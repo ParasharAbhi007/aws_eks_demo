@@ -52,7 +52,7 @@ pipeline:
                     isAutoRejectEnabled: false
                     approvers:
                       userGroups:
-                        - test
+                        - test12
                       minimumCount: 1
                       disallowPipelineExecutor: false
                     approverInputs: []
