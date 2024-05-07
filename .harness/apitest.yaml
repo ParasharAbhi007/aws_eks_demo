@@ -91,3 +91,4 @@ pipeline:
           userGroups: []
           webhookUrl: <+pipeline.variables.key>
       enabled: false
+  allowStageExecutions: true
