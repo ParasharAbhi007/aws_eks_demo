@@ -89,7 +89,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: abcd
+      value: <+input>
     - name: key
       type: String
       description: ""
@@ -99,7 +99,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: abcde
+      value: <+input>
     - name: example
       type: String
       description: ""
