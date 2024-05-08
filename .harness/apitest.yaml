@@ -75,6 +75,7 @@ pipeline:
                 type: MarkAsFailure
         when:
           pipelineStatus: All
+          condition: <+pipeline.variables.fds> == "abc" && <+pipeline.variables.value> == "abcd" ||  <+pipeline.variables.example>=="abcd"
     - stage:
         name: b n
         identifier: b_n
@@ -103,7 +104,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+input>
+      value: abc
     - name: key
       type: String
       description: ""
@@ -113,12 +114,12 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+<+pipeline.variables.example>.split(",").[0]>
+      value: abcd
     - name: example
       type: String
       description: ""
       required: false
-      value: ("cd-1","cd-2","cd-3")
+      value: abc
   notificationRules:
     - name: test
       identifier: test
