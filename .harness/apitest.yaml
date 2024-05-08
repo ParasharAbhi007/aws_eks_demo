@@ -29,11 +29,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
-                          # Install Azure CLI using microdnf
-                          dnf update
-                          dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
-                          dnf install -y azure-cli
+                        script: echo <+inputSet>
                     environmentVariables: []
                     outputVariables:
                       - name: name
