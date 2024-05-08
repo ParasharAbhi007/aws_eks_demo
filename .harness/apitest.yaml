@@ -60,7 +60,7 @@ pipeline:
                 type: MarkAsFailure
         when:
           pipelineStatus: Success
-          condition: <+pipeline.variables.fds> == "abcd" && <+pipeline.variables.value> == "abcde" || <+pipeline.variables.example>=="abcd"
+          condition: <+pipeline.variables.fds> == "abcd" && <+pipeline.variables.value> == "abcd" || <+pipeline.variables.example>=="abcd"
     - stage:
         name: b n
         identifier: b_n
