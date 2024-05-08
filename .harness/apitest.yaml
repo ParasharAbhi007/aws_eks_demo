@@ -104,7 +104,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: abc
+      value: <+inputSet>
   notificationRules:
     - name: test
       identifier: test
