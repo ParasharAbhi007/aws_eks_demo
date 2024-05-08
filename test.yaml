@@ -1,0 +1,21 @@
+inputSet:
+  name: onecheck
+  identifier: onecheck
+  orgIdentifier: AbhiOrg
+  projectIdentifier: CSETest1
+  pipeline:
+    identifier: apitest
+    stages:
+      - stage:
+          identifier: test
+          type: Deployment
+          spec:
+            service:
+              serviceRef: k8service
+    variables:
+      - name: fds
+        type: String
+        value: check
+      - name: value
+        type: String
+        value: check2
