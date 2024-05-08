@@ -60,7 +60,7 @@ pipeline:
                 type: MarkAsFailure
         when:
           pipelineStatus: Success
-          condition: <+pipeline.variables.fds> == "abc" && <+pipeline.variables.value> == "abcd" ||  <+pipeline.variables.example>=="abcd"
+          condition: <+pipeline.variables.fds> == "abc" && <+pipeline.variables.value> == "abcd" || <+pipeline.variables.example>=="abcd"
     - stage:
         name: b n
         identifier: b_n
@@ -89,7 +89,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: abc
+      value: abcd
     - name: key
       type: String
       description: ""
@@ -99,7 +99,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: abcd
+      value: abcde
     - name: example
       type: String
       description: ""
