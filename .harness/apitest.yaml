@@ -79,6 +79,39 @@ pipeline:
                     outputVariables: []
                   timeout: 10m
         tags: {}
+    - stage:
+        name: tas
+        identifier: tas
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: TAS
+          service:
+            serviceRef: tas
+          environment:
+            environmentRef: ECS_INFRA
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: tas
+          execution:
+            steps:
+              - step:
+                  type: BGAppSetup
+                  name: BGAppSetup_1
+                  identifier: BGAppSetup_1
+                  spec:
+                    tasInstanceCountType: FromManifest
+                    existingVersionToKeep: 3
+                    tempRoutes: <+pipeline.variables.example>
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: Ignore
   variables:
     - name: fds
       type: String
