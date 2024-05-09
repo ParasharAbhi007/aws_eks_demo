@@ -57,29 +57,6 @@ pipeline:
         when:
           pipelineStatus: Success
     - stage:
-        name: b n
-        identifier: b_n
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - step:
-                  type: ShellScript
-                  name: ShellScript_1
-                  identifier: ShellScript_1
-                  spec:
-                    shell: Bash
-                    executionTarget: {}
-                    source:
-                      type: Inline
-                      spec:
-                        script: b n
-                    environmentVariables: []
-                    outputVariables: []
-                  timeout: 10m
-        tags: {}
-    - stage:
         name: tas
         identifier: tas
         description: ""
