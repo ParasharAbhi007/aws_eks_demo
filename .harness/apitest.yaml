@@ -117,7 +117,7 @@ pipeline:
             type: String
             description: ""
             required: false
-            value: dfg
+            value: wm-nexus-spectrum-green.test.gaiacloud.jpmchase.net
   variables:
     - name: fds
       type: String
