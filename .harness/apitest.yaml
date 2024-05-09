@@ -80,6 +80,7 @@ pipeline:
                     tasInstanceCountType: FromManifest
                     existingVersionToKeep: 3
                     tempRoutes: <+pipeline.stages.tas.variables.tanzu>
+                    additionalRoutes: <+input>
                   timeout: 10m
             rollbackSteps: []
         tags: {}
