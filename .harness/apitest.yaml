@@ -112,6 +112,12 @@ pipeline:
                 - AllErrors
               action:
                 type: Ignore
+        variables:
+          - name: tanzu
+            type: String
+            description: ""
+            required: false
+            value: dfg
   variables:
     - name: fds
       type: String
