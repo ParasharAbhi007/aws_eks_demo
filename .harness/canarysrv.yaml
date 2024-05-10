@@ -12,8 +12,8 @@ service:
           value: ""
         - name: tow
           type: String
-          description: ""
-          required: false
+          description: chech
+          required: true
           value: <+input>
     type: Kubernetes
   orgIdentifier: AbhiOrg
