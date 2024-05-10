@@ -15,6 +15,11 @@ service:
           description: chech
           required: true
           value: <+input>
+        - name: tow2
+          type: String
+          description: chech
+          required: true
+          value: <+input>
     type: Kubernetes
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
