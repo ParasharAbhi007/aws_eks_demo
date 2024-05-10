@@ -1,0 +1,4 @@
+service:
+  name: "canarysrv"
+  identifier: "canarysrv"
+  tags: {}
