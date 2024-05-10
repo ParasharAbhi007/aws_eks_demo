@@ -1,4 +1,15 @@
 service:
-  name: "canarysrv"
-  identifier: "canarysrv"
+  name: canarysrv
+  identifier: canarysrv
   tags: {}
+  serviceDefinition:
+    spec:
+      variables:
+        - name: name
+          type: String
+          description: helloservice
+          required: true
+          value: ""
+    type: Kubernetes
+  orgIdentifier: AbhiOrg
+  projectIdentifier: CSETest1
