@@ -104,6 +104,14 @@ pipeline:
           deploymentType: Kubernetes
           service:
             serviceRef: canarysrv
+            serviceInputs:
+              serviceDefinition:
+                type: Kubernetes
+                spec:
+                  variables:
+                    - name: tow
+                      type: String
+                      value: <+input>
           environment:
             environmentRef: K8Env
             deployToAll: false
