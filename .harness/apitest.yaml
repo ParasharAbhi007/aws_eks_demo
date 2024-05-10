@@ -112,6 +112,9 @@ pipeline:
                     - name: tow
                       type: String
                       value: <+input>
+                    - name: tow2
+                      type: String
+                      value: <+input>
           environment:
             environmentRef: K8Env
             deployToAll: false
