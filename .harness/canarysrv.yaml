@@ -10,6 +10,11 @@ service:
           description: helloservice
           required: true
           value: ""
+        - name: tow
+          type: String
+          description: ""
+          required: false
+          value: <+input>
     type: Kubernetes
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
