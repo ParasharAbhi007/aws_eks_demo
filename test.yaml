@@ -14,7 +14,7 @@ inputSet:
               serviceRef: k8service
     variables:
       - name: fds
-        type: String
+        type: Strin
         value: check
       - name: value
         type: String
