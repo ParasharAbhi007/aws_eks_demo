@@ -38,6 +38,16 @@ pipeline:
                     delegateSelectors:
                       - abhidelegate
                   timeout: 10m
+              - step:
+                  type: Email
+                  name: Email_1
+                  identifier: Email_1
+                  spec:
+                    to: <+pipeline.triggeredBy>
+                    cc: ""
+                    subject: Sub
+                    body: <+pipeline.stages.test.status>
+                  timeout: 10m
             rollbackSteps: []
           environments:
             metadata:
