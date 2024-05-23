@@ -167,6 +167,15 @@ pipeline:
       required: false
       value: <+inputSet>
   notificationRules:
+    - name: test6
+      identifier: test6
+      pipelineEvents:
+        - type: AllEvents
+      notificationMethod:
+        type: Webhook
+        spec:
+          webhookUrl: <+pipeline.triggeredBy>
+      enabled: true
     - name: test
       identifier: test
       pipelineEvents:
