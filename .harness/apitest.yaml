@@ -38,6 +38,9 @@ pipeline:
                     delegateSelectors:
                       - abhidelegate
                   timeout: 10m
+                  when:
+                    stageStatus: Success
+                    condition: <+env.identifier>=="ECS_INFRA"" || <+env.identifier>=="Dash"
               - step:
                   type: Email
                   name: Email_1
