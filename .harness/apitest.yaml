@@ -40,7 +40,7 @@ pipeline:
                   timeout: 10m
                   when:
                     stageStatus: Success
-                    condition: <+env.identifier>=="ECSS_INFRA" || <+env.identifier>=="Dash"
+                    condition: <+env.identifier>=="ECSS_INFRA" || <+env.identifier>=="ECS_INFRA"
               - step:
                   type: Email
                   name: Email_1
