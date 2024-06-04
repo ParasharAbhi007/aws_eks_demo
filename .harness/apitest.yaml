@@ -35,22 +35,12 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+input>
+      value: "@FirstName|@LastName|@PhoneNumber|@UserEmail|@BuildingName|@PropertyName|@CompanyName"
     - name: key
       type: String
       description: ""
       required: false
       value: https://hooks.slack.com/services/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
-    - name: value
-      type: String
-      description: ""
-      required: false
-      value: <+input>
-    - name: example
-      type: String
-      description: ""
-      required: false
-      value: <+inputSet>
   notificationRules:
     - name: test6
       identifier: test6
