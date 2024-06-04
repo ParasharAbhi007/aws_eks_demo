@@ -8,15 +8,11 @@ pipeline:
     <+pipeline.variables.fds>: ""
   stages:
     - stage:
-        name: test
-        identifier: test
+        name: bs
+        identifier: bs
         description: ""
-        type: Deployment
+        type: Custom
         spec:
-          deploymentType: Kubernetes
-          service:
-            serviceRef: <+input>
-            serviceInputs: <+input>
           execution:
             steps:
               - step:
@@ -29,135 +25,11 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+inputSet>
+                        script: echo <+pipeline.variables.fds>
                     environmentVariables: []
-                    outputVariables:
-                      - name: name
-                        type: String
-                        value: name
-                    delegateSelectors:
-                      - abhidelegate
+                    outputVariables: []
                   timeout: 10m
-                  when:
-                    stageStatus: Success
-                    condition: <+env.identifier>=="ECSS_INFRA" || <+env.identifier>=="ECS_INFRA"
-              - step:
-                  type: Email
-                  name: Email_1
-                  identifier: Email_1
-                  spec:
-                    to: <+pipeline.triggeredBy>
-                    cc: ""
-                    subject: Sub
-                    body: <+pipeline.stages.test.status>
-                  timeout: 10m
-            rollbackSteps: []
-          environments:
-            metadata:
-              parallel: true
-            values:
-              - environmentRef: ECS_INFRA
-                deployToAll: false
-                infrastructureDefinitions:
-                  - identifier: ee
         tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: MarkAsFailure
-        when:
-          pipelineStatus: Success
-    - stage:
-        name: tas
-        identifier: tas
-        description: ""
-        type: Deployment
-        spec:
-          deploymentType: TAS
-          service:
-            serviceRef: tas
-          environment:
-            environmentRef: ECS_INFRA
-            deployToAll: false
-            infrastructureDefinitions:
-              - identifier: tas
-          execution:
-            steps:
-              - step:
-                  type: BGAppSetup
-                  name: BGAppSetup_1
-                  identifier: BGAppSetup_1
-                  spec:
-                    tasInstanceCountType: FromManifest
-                    existingVersionToKeep: 3
-                    tempRoutes: <+pipeline.stages.tas.variables.tanzu>
-                  timeout: 10m
-            rollbackSteps: []
-        tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: Ignore
-        variables:
-          - name: tanzu
-            type: String
-            description: ""
-            required: false
-            value: wm-nexus-spectrum-green.test.gaiacloud.jpmchase.net
-    - stage:
-        name: hlo
-        identifier: hlo
-        description: ""
-        type: Deployment
-        spec:
-          deploymentType: Kubernetes
-          service:
-            serviceRef: canarysrv
-            serviceInputs:
-              serviceDefinition:
-                type: Kubernetes
-                spec:
-                  variables:
-                    - name: tow
-                      type: String
-                      value: <+input>
-                    - name: tow2
-                      type: String
-                      value: <+input>
-          environment:
-            environmentRef: K8Env
-            deployToAll: false
-            infrastructureDefinitions:
-              - identifier: test
-          execution:
-            steps:
-              - step:
-                  name: Rollout Deployment
-                  identifier: rolloutDeployment
-                  type: K8sRollingDeploy
-                  timeout: 10m
-                  spec:
-                    skipDryRun: false
-                    pruningEnabled: false
-            rollbackSteps:
-              - step:
-                  name: Rollback Rollout Deployment
-                  identifier: rollbackRolloutDeployment
-                  type: K8sRollingRollback
-                  timeout: 10m
-                  spec:
-                    pruningEnabled: false
-        tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: StageRollback
   variables:
     - name: fds
       type: String
