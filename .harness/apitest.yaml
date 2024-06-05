@@ -25,7 +25,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+pipeline.variables.fds>
+                        script: echo <+pipeline.variables.key>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
