@@ -102,7 +102,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+<+pipeline.variables.fds>.split(",")>
+      value: <+input>
   notificationRules:
     - name: test6
       identifier: test6
