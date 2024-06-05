@@ -40,7 +40,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+pipeline.variables.fds>.split(",")
+      value: <+<+pipeline.variables.fds>.split(",")>
   notificationRules:
     - name: test6
       identifier: test6
