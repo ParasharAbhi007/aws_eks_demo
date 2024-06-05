@@ -92,6 +92,17 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+        variables:
+          - name: bgp
+            type: String
+            description: ""
+            required: false
+            value: one,two,three,four
+          - name: two
+            type: String
+            description: ""
+            required: false
+            value: <+pipeline.stages.bgp.variables.bgp>.split(",")
   variables:
     - name: fds
       type: String
