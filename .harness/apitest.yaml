@@ -55,7 +55,7 @@ pipeline:
                     tasInstanceCountType: FromManifest
                     existingVersionToKeep: 3
                     additionalRoutes: []
-                    tempRoutes: []
+                    tempRoutes: <+pipeline.stages.bgp.variables.two>
               - step:
                   name: App Resize
                   identifier: AppResize
