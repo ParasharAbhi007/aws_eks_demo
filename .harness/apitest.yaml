@@ -35,12 +35,12 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: "\"@FirstName|@LastName|@PhoneNumber|@abhinandan.parashar@gmail.com|@BuildingName|@PropertyName|@CompanyName\""
+      value: nexus-reports-gree,nexus-reports-green2,nexus-access-green
     - name: key
       type: String
       description: ""
       required: false
-      value: https://hooks.slack.com/services/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
+      value: <+pipeline.variables.fds>.split(",")
   notificationRules:
     - name: test6
       identifier: test6
