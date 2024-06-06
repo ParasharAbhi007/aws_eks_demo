@@ -31,7 +31,7 @@ pipeline:
                   timeout: 10m
         tags: {}
     - stage:
-        name: test
+        name: test-test
         identifier: test
         description: ""
         type: Deployment
