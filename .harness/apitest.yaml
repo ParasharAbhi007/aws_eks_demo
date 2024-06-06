@@ -57,7 +57,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+<+pipeline.stages.test_ECS_INFRA_ee.variables.test>.split(",")><+pipeline.stages.test.variables.test2>
+                        script: echo <+<+pipeline.stages.test_ECS_INFRA_ee.variables.test>.split(",")><+pipeline.stages.test_ECS_INFRA_ee.variables.test2>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
