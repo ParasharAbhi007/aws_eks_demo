@@ -103,6 +103,50 @@ pipeline:
             description: ""
             required: false
             value: <+pipeline.stages.bgp.variables.bgp>.split(",")
+    - stage:
+        name: test
+        identifier: test
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          environments:
+            metadata:
+              parallel: false
+            values:
+              - environmentRef: ECS_INFRA
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: ee
+          services:
+            values:
+              - serviceRef: k8service
+            metadata:
+              parallel: false
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo ""
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: MarkAsFailure
   variables:
     - name: fds
       type: String
