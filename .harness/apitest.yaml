@@ -45,6 +45,7 @@ pipeline:
                 deployToAll: false
                 infrastructureDefinitions:
                   - identifier: ee
+                  - identifier: two
           execution:
             steps:
               - step:
