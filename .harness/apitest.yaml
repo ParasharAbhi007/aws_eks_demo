@@ -31,79 +31,6 @@ pipeline:
                   timeout: 10m
         tags: {}
     - stage:
-        name: bgp
-        identifier: bgp
-        description: ""
-        type: Deployment
-        spec:
-          deploymentType: TAS
-          service:
-            serviceRef: tas
-          environment:
-            environmentRef: ECS_INFRA
-            deployToAll: false
-            infrastructureDefinitions:
-              - identifier: tas
-          execution:
-            steps:
-              - step:
-                  name: BG App Setup
-                  identifier: BGAppSetup
-                  type: BGAppSetup
-                  timeout: 10m
-                  spec:
-                    tasInstanceCountType: FromManifest
-                    existingVersionToKeep: 3
-                    additionalRoutes: []
-                    tempRoutes: <+pipeline.stages.bgp.variables.two>
-              - step:
-                  name: App Resize
-                  identifier: AppResize
-                  type: AppResize
-                  timeout: 10m
-                  spec:
-                    newAppInstances:
-                      type: Percentage
-                      spec:
-                        value: 100
-                    oldAppInstances:
-                      type: Percentage
-                      spec:
-                        value: 100
-              - step:
-                  name: Swap Routes
-                  identifier: SwapRoutes
-                  type: SwapRoutes
-                  timeout: 10m
-                  spec:
-                    downSizeOldApplication: true
-            rollbackSteps:
-              - step:
-                  name: Swap Rollback
-                  identifier: SwapRollback
-                  type: SwapRollback
-                  timeout: 10m
-                  spec:
-                    upsizeInActiveApp: true
-        tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: StageRollback
-        variables:
-          - name: bgp
-            type: String
-            description: ""
-            required: false
-            value: one,two,three,four
-          - name: two
-            type: String
-            description: ""
-            required: false
-            value: <+pipeline.stages.bgp.variables.bgp>.split(",")
-    - stage:
         name: test
         identifier: test
         description: ""
@@ -147,6 +74,12 @@ pipeline:
                 - AllErrors
               action:
                 type: MarkAsFailure
+        variables:
+          - name: test
+            type: String
+            description: ""
+            required: false
+            value: nexus-reports-green.gaiacloud.jpmchase.net,nexus-reports-green.apps.prod.na-6x.gap.jpmchase.net,nexus-access-green.nexus-reports-green.gaiacloud,nexus-access-green.apps.prod.na-6x.gap.jpmchase.net
   variables:
     - name: fds
       type: String
