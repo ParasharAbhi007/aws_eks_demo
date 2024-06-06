@@ -62,7 +62,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+<+pipeline.stages.test.variables.test>.split(",")>
+                        script: echo <+<+pipeline.stages.test_0.variables.test>.split(",")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
