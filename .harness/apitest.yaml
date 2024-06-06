@@ -45,11 +45,6 @@ pipeline:
                 deployToAll: false
                 infrastructureDefinitions:
                   - identifier: ee
-          services:
-            values:
-              - serviceRef: k8service
-            metadata:
-              parallel: false
           execution:
             steps:
               - step:
@@ -67,6 +62,8 @@ pipeline:
                     outputVariables: []
                   timeout: 10m
             rollbackSteps: []
+          service:
+            serviceRef: k8service
         tags: {}
         failureStrategies:
           - onFailure:
