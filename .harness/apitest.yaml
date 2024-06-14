@@ -25,7 +25,45 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+<+pipeline.variables.fds>.split(",")>
+                        script: |
+                          #!/bin/bash
+                          set -e
+
+                          cdo_jira_id="none"
+                          doRelease="none"
+
+                          parsed_string=$(echo "${cdo_jira_ticket}" | awk -F"-" '{print $1"-"$2}' | tr '[:upper:]' '[:lower:]' );
+                          if [[ "${parsed_string}" =~ cdo-[0-9] ]];  then
+                            cdo_jira_id=${parsed_string}
+                          fi
+
+                          if [[ "${commit_message}" =~ "doRelease = true" ]]; then
+                            doRelease="true"
+                          else
+                            doRelease="false"
+                          fi
+
+                          parsed_4_jira=$(echo ${commit_message} | grep -Po 'Jira Ticket: \K\S+' |  tr '[:upper:]' '[:lower:]')
+                          # check for [] as BB Description convert Jira ticket to web link.
+                          if echo "$parsed_4_jira" | grep -q '\[[^]]*\]'; then
+                            parsed_4_jira=$(echo $parsed_4_jira |grep -o '\[[^]]*\]' | sed 's/\[\([^]]*\)\]/\1/g')
+                          fi
+
+                          # check if the parsed output is in format of CDO-XXX
+                          if [[ ${parsed_4_jira} =~ cdo-[0-9] ]]; then
+                            cdo_jira_id=${parsed_4_jira} 
+                          fi
+                          ## Get cluster Id if specify, condition either "all" or a "known cluster's name" ##
+                          cluster_name=$(echo ${commit_message} | grep -Po 'ClusterName: \K\S+' |  tr '[:upper:]' '[:lower:]')
+                          if [[ "${cluster_name}" == "all" ]]; then
+                            single_cluster=false
+                          else
+                            single_cluster=true
+                          fi
+
+                          echo $cdo_jira_id
+                          echo $doRelease
+                          echo $single_cluster
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
