@@ -25,7 +25,12 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+secrets.getValue("<+pipeline.variables.fds>")>
+                        script: |
+                          var=["test","test","test"]
+                          for i in ${var}
+                          do
+                          echo <+secrets.getValue("$i")>
+                          done
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
