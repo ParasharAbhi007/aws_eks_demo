@@ -3,23 +3,7 @@ service:
   identifier: canarysrv
   tags: {}
   serviceDefinition:
-    spec:
-      variables:
-        - name: name
-          type: String
-          description: helloservice
-          required: true
-          value: ""
-        - name: tow
-          type: String
-          description: chech
-          required: true
-          value: <+input>
-        - name: tow2
-          type: String
-          description: chech
-          required: true
-          value: <+input>
+    spec: {}
     type: Kubernetes
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
