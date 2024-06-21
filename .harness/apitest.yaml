@@ -25,12 +25,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
-                          var=("test" "test" "test")
-                          for i in "${var[@]}"
-                          do
-                              echo <+secrets.getValue("$i")>
-                          done
+                        script: echo <+secrets.getValue("")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
