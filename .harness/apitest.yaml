@@ -25,7 +25,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+secrets.getValue("")>
+                        script: echo <+secrets.getValue("<+pipeline.variables.fds>")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
