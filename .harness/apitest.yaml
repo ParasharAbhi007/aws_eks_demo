@@ -29,6 +29,10 @@ pipeline:
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
+                  strategy:
+                    repeat:
+                      items: <+pipeline.variables.fds>
+                      maxConcurrency: 5
         tags: {}
   variables:
     - name: fds
