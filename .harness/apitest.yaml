@@ -35,7 +35,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: nexus-reports-green.gaiacloud.jpmchase.net,nexus-reports-green.apps.prod.na-6x.gap.jpmchase.net,nexus-access-green.nexus-reports-green.gaiacloud,nexus-access-green.apps.prod.na-6x.gap.jpmchase.net
+      value: test
     - name: key
       type: String
       description: ""
