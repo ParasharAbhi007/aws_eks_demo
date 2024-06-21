@@ -39,7 +39,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: ("test1","test1","test1)
+      value: "[\"test1\",\"test1\",\"test1]"
     - name: key
       type: String
       description: ""
