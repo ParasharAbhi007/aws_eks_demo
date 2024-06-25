@@ -33,6 +33,29 @@ pipeline:
                         value: var
                   timeout: 10m
         tags: {}
+    - stage:
+        name: qqq
+        identifier: qqq
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var>>
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+        tags: {}
   variables:
     - name: fds
       type: String
@@ -43,7 +66,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+input>
+      value: ShellScript_1
   notificationRules:
     - name: test6
       identifier: test6
