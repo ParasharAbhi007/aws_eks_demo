@@ -25,14 +25,13 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+secrets.getValue("<+repeat.item>")>
+                        script: var="help"
                     environmentVariables: []
-                    outputVariables: []
+                    outputVariables:
+                      - name: var
+                        type: String
+                        value: var
                   timeout: 10m
-                  strategy:
-                    repeat:
-                      items: <+pipeline.variables.fds>.split(",")
-                      maxConcurrency: 5
         tags: {}
   variables:
     - name: fds
