@@ -1,5 +1,5 @@
 template:
-  name: jenkinstest
+  name: jenkinstests
   identifier: jenkinstest
   versionLabel: "1"
   type: Pipeline
