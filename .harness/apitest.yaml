@@ -51,7 +51,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var>.split(',')[1]>
+                        script: echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var>>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
