@@ -25,12 +25,12 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: var="help"
+                        script: var1="help"
                     environmentVariables: []
                     outputVariables:
-                      - name: var
+                      - name: var1
                         type: String
-                        value: var
+                        value: var1
                   timeout: 10m
         tags: {}
     - stage:
