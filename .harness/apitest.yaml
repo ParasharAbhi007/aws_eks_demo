@@ -52,11 +52,11 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
-                          echo <+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var>
+                          echo <+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var1>
 
-                          echo <+pipeline.stages.bs.spec.execution.steps.ShellScript_1.output.outputVariables.var>
+                          echo <+pipeline.stages.bs.spec.execution.steps.ShellScript_1.output.outputVariables.var1>
 
-                          echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var>>
+                          echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var1>>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
