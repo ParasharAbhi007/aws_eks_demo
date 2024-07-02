@@ -73,7 +73,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+pipeline.variables.fds>+"-"+ShellScript_1
+      value: <+<+pipeline.variables.fds>+"-"+ShellScript_1>
   notificationRules:
     - name: test6
       identifier: test6
