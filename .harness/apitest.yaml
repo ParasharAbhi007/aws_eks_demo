@@ -25,7 +25,9 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: var1="help"
+                        script: |-
+                          var1="help"
+                          echo <+pipeline.variables.key>
                     environmentVariables: []
                     outputVariables:
                       - name: var1
