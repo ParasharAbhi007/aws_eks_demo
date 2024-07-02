@@ -78,7 +78,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: <+env.name>+"-"+<+project.name>
+      value: <+env.name>+"-"+CSETest1
   notificationRules:
     - name: test6
       identifier: test6
