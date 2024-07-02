@@ -34,6 +34,11 @@ pipeline:
                         type: String
                         value: var1
                   timeout: 10m
+          environment:
+            environmentRef: ECS_INFRA
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: tas
         tags: {}
     - stage:
         name: qqq
