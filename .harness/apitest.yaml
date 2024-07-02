@@ -68,7 +68,7 @@ pipeline:
       type: String
       description: ""
       required: false
-      value: ("test1","test1","test1)
+      value: hey
     - name: key
       type: String
       description: ""
