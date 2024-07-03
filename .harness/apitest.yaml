@@ -28,6 +28,7 @@ pipeline:
                         script: |-
                           var1="help"
                           echo <+pipeline.variables.key>
+                          echo <+pipeline.variables.something>
                     environmentVariables: []
                     outputVariables:
                       - name: var1
@@ -75,6 +76,11 @@ pipeline:
       required: false
       value: hey
     - name: key
+      type: String
+      description: ""
+      required: false
+      value: <+input>
+    - name: something
       type: String
       description: ""
       required: false
