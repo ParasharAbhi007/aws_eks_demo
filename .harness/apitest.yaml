@@ -74,19 +74,6 @@ pipeline:
                           environmentVariables: []
                           outputVariables: []
                         timeout: 10m
-                        failureStrategies:
-                          - onFailure:
-                              errors:
-                                - AllErrors
-                              action:
-                                type: Retry
-                                spec:
-                                  retryCount: 1
-                                  onRetryFailure:
-                                    action:
-                                      type: MarkAsFailure
-                                  retryIntervals:
-                                    - 30s
         tags: {}
     - stage:
         name: cds
