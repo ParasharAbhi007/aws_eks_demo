@@ -69,6 +69,8 @@ pipeline:
                                 echo <+pipeline.stages.bs.spec.execution.steps.ShellScript_1.output.outputVariables.var1>
 
                                 echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var1>>
+
+                                12344332wedf
                           environmentVariables: []
                           outputVariables: []
                         timeout: 10m
