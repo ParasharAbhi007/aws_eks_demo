@@ -8,55 +8,32 @@ pipeline:
     <+pipeline.variables.fds>: ""
   stages:
     - stage:
-        name: cds
-        identifier: cds
+        name: mat
+        identifier: mat
         description: ""
-        type: Deployment
+        type: Custom
         spec:
-          deploymentType: NativeHelm
           execution:
             steps:
               - step:
-                  type: HelmDeploy
-                  name: HelmDeploy_1
-                  identifier: HelmDeploy_1
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
                   spec:
-                    skipDryRun: false
-                    ignoreReleaseHistFailStatus: false
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          echo "<+matrix.tagsToRun>"
+                    environmentVariables: []
+                    outputVariables: []
                   timeout: 10m
-            rollbackSteps: []
-          service:
-            serviceRef: jfrogplatform
-            serviceInputs:
-              serviceDefinition:
-                type: NativeHelm
-                spec:
-                  manifests:
-                    - manifest:
-                        identifier: jfrogplatform
-                        type: HelmChart
-                        spec:
-                          store:
-                            type: Http
-                            spec:
-                              connectorRef: <+input>
-                          chartVersion: <+input>
-                  variables:
-                    - name: environment_values_path
-                      type: String
-                      value: <+input>.allowedValues(shared/default/dev,shared/arti/dev,shared/arti/test,shared/arti/prod)
-          environment:
-            environmentRef: ECS_INFRA
-            deployToAll: false
-            infrastructureDefinitions:
-              - identifier: helm
+                  strategy:
+                    matrix:
+                      tagsToRun: <+stage.variables.tags1.split(',')>
         tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: StageRollback
   variables:
     - name: fds
       type: String
