@@ -29,10 +29,10 @@ pipeline:
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToRun: <+stage.variables.tags1.split(',')>
             tags: {}
-            strategy:
-              matrix:
-                tagsToRun: <+stage.variables.tags1.split(',')>
             failureStrategies:
               - onFailure:
                   errors:
@@ -67,10 +67,10 @@ pipeline:
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToExecute2: <+stage.variables.tags2.split(',')>
             tags: {}
-            strategy:
-              matrix:
-                tagsToExecute2: <+stage.variables.tags2.split(',')>
             failureStrategies:
               - onFailure:
                   errors:
@@ -105,13 +105,13 @@ pipeline:
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToExecute3: <+stage.variables.tags3.split(",")>
+                          when: "!empty(<+stage.variables.tags3>)"
                 rollbackSteps: []
               serviceDependencies: []
             tags: {}
-            strategy:
-              matrix:
-                tagsToExecute3: <+stage.variables.tags3.split(",")>
-              when: "!empty(<+stage.variables.tags3>)"
             failureStrategies:
               - onFailure:
                   errors:
