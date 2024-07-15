@@ -44,7 +44,7 @@ pipeline:
                 type: String
                 description: tags to run in auto1
                 required: false
-                value: "@1tag,@1taggidy,@1taggiedye"
+                value: <+input>
         - stage:
             identifier: auto2
             type: Custom
