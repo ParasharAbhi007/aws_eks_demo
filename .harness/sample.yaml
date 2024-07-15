@@ -31,7 +31,7 @@ pipeline:
                       timeout: 10m
                       strategy:
                         matrix:
-                          tagsToRun: <+stage.variables.tags1.split(',')>
+                          tagsToRun: <+stage.variables.tags12.split(',')>
             tags: {}
             failureStrategies:
               - onFailure:
@@ -40,7 +40,7 @@ pipeline:
                   action:
                     type: Ignore
             variables:
-              - name: tags1
+              - name: tags12
                 type: String
                 description: ""
                 required: false
