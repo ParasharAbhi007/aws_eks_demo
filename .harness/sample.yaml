@@ -42,7 +42,7 @@ pipeline:
             variables:
               - name: tags1
                 type: String
-                description: tags to run in auto1
+                description: ""
                 required: false
                 value: "@1tag,@1taggidy,@1taggiedye"
         - stage:
