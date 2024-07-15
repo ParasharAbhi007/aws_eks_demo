@@ -123,5 +123,3 @@ pipeline:
                 description: tags to run in auto3
                 required: false
                 value: "@3yes"
-  delegateSelectors:
-    - d1b_dev_delegate
