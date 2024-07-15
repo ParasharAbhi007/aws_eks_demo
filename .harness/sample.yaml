@@ -45,47 +45,6 @@ pipeline:
                 required: false
                 value: "@2taggo,@2tagjgj"
         - stage:
-            identifier: auto3
-            type: Custom
-            name: auto3
-            description: ""
-            spec:
-              execution:
-                steps:
-                  - step:
-                      identifier: ShellScript_1
-                      type: ShellScript
-                      name: ShellScript_1
-                      spec:
-                        shell: Bash
-                        executionTarget: {}
-                        source:
-                          type: Inline
-                          spec:
-                            script: echo "<+matrix.tagsToExecute3>"
-                        environmentVariables: []
-                        outputVariables: []
-                      timeout: 10m
-                      strategy:
-                        matrix:
-                          tagsToExecute3: <+stage.variables.tags3.split(",")>
-                          when: "!empty(<+stage.variables.tags3>)"
-                rollbackSteps: []
-              serviceDependencies: []
-            tags: {}
-            failureStrategies:
-              - onFailure:
-                  errors:
-                    - AllErrors
-                  action:
-                    type: Ignore
-            variables:
-              - name: tags3
-                type: String
-                description: tags to run in auto3
-                required: false
-                value: "@3yes"
-        - stage:
             name: auto1
             identifier: auto1
             description: ""
@@ -117,3 +76,30 @@ pipeline:
                 description: ""
                 required: false
                 value: "@1tag,@1taggidy,@1taggiedye"
+        - stage:
+            name: auto3
+            identifier: auto3
+            description: ""
+            type: Custom
+            spec:
+              execution:
+                steps:
+                  - step:
+                      type: ShellScript
+                      name: ShellScript_1
+                      identifier: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: "echo "
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToExecute3: <+stage.variables.tags3.split(",")>
+                        when: "!empty(<+stage.variables.tags3>)"
+            tags: {}
