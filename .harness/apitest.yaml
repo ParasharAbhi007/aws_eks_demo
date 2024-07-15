@@ -106,24 +106,5 @@ pipeline:
                 description: ""
                 required: false
                 value: <+input>
-  notificationRules:
-    - name: test6
-      identifier: test6
-      pipelineEvents:
-        - type: AllEvents
-      notificationMethod:
-        type: Webhook
-        spec:
-          webhookUrl: <+pipeline.triggeredBy>
-      enabled: true
-    - name: test
-      identifier: test
-      pipelineEvents:
-        - type: AllEvents
-      notificationMethod:
-        type: Slack
-        spec:
-          userGroups: []
-          webhookUrl: <+pipeline.variables.key>
-      enabled: false
+  notificationRules: []
   allowStageExecutions: true
