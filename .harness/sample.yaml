@@ -111,3 +111,9 @@ pipeline:
                         matrix:
                           tagsToRun: <+stage.variables.tags1.split(',')>
             tags: {}
+            variables:
+              - name: tags1
+                type: String
+                description: ""
+                required: false
+                value: "@1tag,@1taggidy,@1taggiedye"
