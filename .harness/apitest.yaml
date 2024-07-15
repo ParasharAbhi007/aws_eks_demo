@@ -7,71 +7,72 @@ pipeline:
     tag1: ""
     <+pipeline.variables.fds>: ""
   stages:
-    - stage:
-        name: mat
-        identifier: mat
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - step:
-                  type: ShellScript
-                  name: ShellScript_1
-                  identifier: ShellScript_1
-                  spec:
-                    shell: Bash
-                    executionTarget: {}
-                    source:
-                      type: Inline
-                      spec:
-                        script: |
-                          echo "<+matrix.tagsToRun>"
-                    environmentVariables: []
-                    outputVariables: []
-                  timeout: 10m
-                  strategy:
-                    matrix:
-                      tagsToRun: <+stage.variables.tags1.split(',')>
-        tags: {}
-        variables:
-          - name: tags1
-            type: String
+    - parallel:
+        - stage:
+            name: mat
+            identifier: mat
             description: ""
-            required: false
-            value: <+input>
-    - stage:
-        name: auto2
-        identifier: auto2
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - step:
-                  type: ShellScript
-                  name: ShellScript_1
-                  identifier: ShellScript_1
-                  spec:
-                    shell: Bash
-                    executionTarget: {}
-                    source:
-                      type: Inline
+            type: Custom
+            spec:
+              execution:
+                steps:
+                  - step:
+                      type: ShellScript
+                      name: ShellScript_1
+                      identifier: ShellScript_1
                       spec:
-                        script: echo "<+matrix.tagsToExecute2>"
-                    environmentVariables: []
-                    outputVariables: []
-                  timeout: 10m
-                  strategy:
-                    matrix:
-                      tagsToExecute2: <+stage.variables.tags2.split(',')>
-        tags: {}
-        variables:
-          - name: tags2
-            type: String
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: |
+                              echo "<+matrix.tagsToRun>"
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToRun: <+stage.variables.tags1.split(',')>
+            tags: {}
+            variables:
+              - name: tags1
+                type: String
+                description: ""
+                required: false
+                value: <+input>
+        - stage:
+            name: auto2
+            identifier: auto2
             description: ""
-            required: false
-            value: <+input>
+            type: Custom
+            spec:
+              execution:
+                steps:
+                  - step:
+                      type: ShellScript
+                      name: ShellScript_1
+                      identifier: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: echo "<+matrix.tagsToExecute2>"
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToExecute2: <+stage.variables.tags2.split(',')>
+            tags: {}
+            variables:
+              - name: tags2
+                type: String
+                description: ""
+                required: false
+                value: <+input>
   variables:
     - name: fds
       type: String
