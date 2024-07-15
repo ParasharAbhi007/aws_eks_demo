@@ -40,7 +40,7 @@ pipeline:
                 type: String
                 description: ""
                 required: false
-                value: <+input>
+                value: "@1tag,@1taggidy,@1taggiedye"
         - stage:
             name: auto2
             identifier: auto2
