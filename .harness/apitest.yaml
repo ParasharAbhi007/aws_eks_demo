@@ -8,126 +8,57 @@ pipeline:
     <+pipeline.variables.fds>: ""
   stages:
     - stage:
-        name: bs
-        identifier: bs
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - step:
-                  type: ShellScript
-                  name: ShellScript_1
-                  identifier: ShellScript_1
-                  spec:
-                    shell: Bash
-                    executionTarget: {}
-                    source:
-                      type: Inline
-                      spec:
-                        script: |-
-                          var1="help"
-                          echo <+pipeline.variables.key>
-                          echo <+pipeline.variables.something>
-                    environmentVariables: []
-                    outputVariables:
-                      - name: var1
-                        type: String
-                        value: var1
-                  timeout: 10m
-          environment:
-            environmentRef: ECS_INFRA
-            deployToAll: false
-            infrastructureDefinitions:
-              - identifier: tas
-        tags: {}
-    - stage:
-        name: qqq
-        identifier: qqq
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - stepGroup:
-                  name: stpgrps
-                  identifier: stpgrps
-                  steps:
-                    - step:
-                        type: ShellScript
-                        name: ShellScript_1
-                        identifier: ShellScript_1
-                        spec:
-                          shell: Bash
-                          executionTarget: {}
-                          source:
-                            type: Inline
-                            spec:
-                              script: |-
-                                echo <+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var1>
-
-                                echo <+pipeline.stages.bs.spec.execution.steps.ShellScript_1.output.outputVariables.var1>
-
-                                echo <+<+pipeline.stages.bs.spec.execution.steps.<+pipeline.variables.key>.output.outputVariables.var1>>
-
-                                12344332wedf
-                          environmentVariables: []
-                          outputVariables: []
-                        timeout: 10m
-                  failureStrategies:
-                    - onFailure:
-                        errors:
-                          - AllErrors
-                        action:
-                          type: Retry
-                          spec:
-                            retryCount: 1
-                            retryIntervals:
-                              - 30s
-                            onRetryFailure:
-                              action:
-                                type: MarkAsFailure
-        tags: {}
-    - stage:
         name: cds
         identifier: cds
         description: ""
         type: Deployment
         spec:
-          deploymentType: Kubernetes
+          deploymentType: NativeHelm
+          execution:
+            steps:
+              - step:
+                  type: HelmDeploy
+                  name: HelmDeploy_1
+                  identifier: HelmDeploy_1
+                  spec:
+                    skipDryRun: false
+                    ignoreReleaseHistFailStatus: false
+                  timeout: 10m
+            rollbackSteps: []
           service:
-            serviceRef: k8service
+            serviceRef: jfrogplatform
             serviceInputs:
               serviceDefinition:
-                type: Kubernetes
+                type: NativeHelm
                 spec:
-                  artifacts:
-                    primary:
-                      primaryArtifactRef: <+input>
-                      sources: <+input>
+                  manifests:
+                    - manifest:
+                        identifier: jfrogplatform
+                        type: HelmChart
+                        spec:
+                          store:
+                            type: Http
+                            spec:
+                              connectorRef: <+input>
+                          chartVersion: <+input>
+                    - manifest:
+                        identifier: valuesjfrogplatform
+                        type: Values
+                        spec:
+                          store:
+                            type: Github
+                            spec:
+                              connectorRef: <+input>
+                              branch: <+input>
+                  variables:
+                    - name: environment_values_path
+                      type: String
+                      value: <+input>.allowedValues(shared/default/dev,shared/arti/dev,shared/arti/test,shared/arti/prod)
           environment:
             environmentRef: ECS_INFRA
             deployToAll: false
             infrastructureDefinitions:
-              - identifier: two
-          execution:
-            steps:
-              - step:
-                  name: Rollout Deployment
-                  identifier: rolloutDeployment
-                  type: K8sRollingDeploy
-                  timeout: 10m
-                  spec:
-                    skipDryRun: false
-                    pruningEnabled: false
-            rollbackSteps:
-              - step:
-                  name: Rollback Rollout Deployment
-                  identifier: rollbackRolloutDeployment
-                  type: K8sRollingRollback
-                  timeout: 10m
-                  spec:
-                    pruningEnabled: false
+              - identifier: helm
         tags: {}
         failureStrategies:
           - onFailure:
