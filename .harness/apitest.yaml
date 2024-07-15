@@ -41,15 +41,6 @@ pipeline:
                             spec:
                               connectorRef: <+input>
                           chartVersion: <+input>
-                    - manifest:
-                        identifier: valuesjfrogplatform
-                        type: Values
-                        spec:
-                          store:
-                            type: Github
-                            spec:
-                              connectorRef: <+input>
-                              branch: <+input>
                   variables:
                     - name: environment_values_path
                       type: String
