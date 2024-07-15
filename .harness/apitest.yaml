@@ -73,6 +73,33 @@ pipeline:
                 description: ""
                 required: false
                 value: <+input>
+        - stage:
+            name: auto3
+            identifier: auto3
+            description: ""
+            type: Custom
+            spec:
+              execution:
+                steps:
+                  - step:
+                      type: ShellScript
+                      name: ShellScript_1
+                      identifier: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: echo
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToExecute3: <+stage.variables.tags3.split(",")>
+                        when: "!empty(<+stage.variables.tags3>)"
+            tags: {}
   variables:
     - name: fds
       type: String
