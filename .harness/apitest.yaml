@@ -66,6 +66,12 @@ pipeline:
                     matrix:
                       tagsToExecute2: <+stage.variables.tags2.split(',')>
         tags: {}
+        variables:
+          - name: tags2
+            type: String
+            description: ""
+            required: false
+            value: <+input>
   variables:
     - name: fds
       type: String
