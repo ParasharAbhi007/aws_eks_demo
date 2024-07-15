@@ -106,22 +106,6 @@ pipeline:
                 description: ""
                 required: false
                 value: <+input>
-  variables:
-    - name: fds
-      type: String
-      description: ""
-      required: false
-      value: hey
-    - name: key
-      type: String
-      description: ""
-      required: false
-      value: <+input>
-    - name: something
-      type: String
-      description: ""
-      required: false
-      value: <+input>
   notificationRules:
     - name: test6
       identifier: test6
