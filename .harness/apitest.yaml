@@ -100,6 +100,12 @@ pipeline:
                           tagsToExecute3: <+stage.variables.tags3.split(",")>
                         when: "!empty(<+stage.variables.tags3>)"
             tags: {}
+            variables:
+              - name: tags3
+                type: String
+                description: ""
+                required: false
+                value: <+input>
   variables:
     - name: fds
       type: String
