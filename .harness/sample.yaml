@@ -1,0 +1,127 @@
+pipeline:
+  identifier: sample
+  name: sample
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  tags: {}
+  stages:
+    - parallel:
+        - stage:
+            identifier: test
+            type: Custom
+            name: auto1
+            description: ""
+            spec:
+              execution:
+                steps:
+                  - step:
+                      identifier: ShellScript_1
+                      type: ShellScript
+                      name: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: echo "<+matrix.tagsToRun>"
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+            tags: {}
+            strategy:
+              matrix:
+                tagsToRun: <+stage.variables.tags1.split(',')>
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: Ignore
+            variables:
+              - name: tags1
+                type: String
+                description: tags to run in auto1
+                required: false
+                value: "@1tag,@1taggidy,@1taggiedye"
+        - stage:
+            identifier: auto2
+            type: Custom
+            name: auto2
+            description: ""
+            spec:
+              execution:
+                steps:
+                  - step:
+                      identifier: ShellScript_1
+                      type: ShellScript
+                      name: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: echo "<+matrix.tagsToExecute2>"
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+            tags: {}
+            strategy:
+              matrix:
+                tagsToExecute2: <+stage.variables.tags2.split(',')>
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: Ignore
+            variables:
+              - name: tags2
+                type: String
+                description: tags to run in auto2
+                required: false
+                value: "@2taggo,@2tagjgj"
+        - stage:
+            identifier: auto3
+            type: Custom
+            name: auto3
+            description: ""
+            spec:
+              execution:
+                steps:
+                  - step:
+                      identifier: ShellScript_1
+                      type: ShellScript
+                      name: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: echo "<+matrix.tagsToExecute3>"
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+                rollbackSteps: []
+              serviceDependencies: []
+            tags: {}
+            strategy:
+              matrix:
+                tagsToExecute3: <+stage.variables.tags3.split(",")>
+              when: "!empty(<+stage.variables.tags3>)"
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: Ignore
+            variables:
+              - name: tags3
+                type: String
+                description: tags to run in auto3
+                required: false
+                value: "@3yes"
+  delegateSelectors:
+    - d1b_dev_delegate
