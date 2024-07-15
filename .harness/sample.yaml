@@ -24,7 +24,8 @@ pipeline:
                         source:
                           type: Inline
                           spec:
-                            script: echo "<+matrix.tagsToRun>"
+                            script: |
+                              echo "<+matrix.tagsToRun>"
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
