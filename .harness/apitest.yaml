@@ -40,6 +40,32 @@ pipeline:
             description: ""
             required: false
             value: <+input>
+    - stage:
+        name: auto2
+        identifier: auto2
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo "<+matrix.tagsToExecute2>"
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+                  strategy:
+                    matrix:
+                      tagsToExecute2: <+stage.variables.tags2.split(',')>
+        tags: {}
   variables:
     - name: fds
       type: String
