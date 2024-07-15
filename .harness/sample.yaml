@@ -7,45 +7,6 @@ pipeline:
   stages:
     - parallel:
         - stage:
-            identifier: test
-            type: Custom
-            name: auto1
-            description: ""
-            spec:
-              execution:
-                steps:
-                  - step:
-                      identifier: ShellScript_1
-                      type: ShellScript
-                      name: ShellScript_1
-                      spec:
-                        shell: Bash
-                        executionTarget: {}
-                        source:
-                          type: Inline
-                          spec:
-                            script: |
-                              echo <+matrix.tagsToRun>
-                        environmentVariables: []
-                        outputVariables: []
-                      timeout: 10m
-                      strategy:
-                        matrix:
-                          tagsToRun: <+stage.variables.tags12.split(',')>
-            tags: {}
-            failureStrategies:
-              - onFailure:
-                  errors:
-                    - AllErrors
-                  action:
-                    type: Ignore
-            variables:
-              - name: tags12
-                type: String
-                description: ""
-                required: false
-                value: "@1tag,@1taggidy,@1taggiedye"
-        - stage:
             identifier: auto2
             type: Custom
             name: auto2
@@ -124,3 +85,29 @@ pipeline:
                 description: tags to run in auto3
                 required: false
                 value: "@3yes"
+        - stage:
+            name: auto1
+            identifier: auto1
+            description: ""
+            type: Custom
+            spec:
+              execution:
+                steps:
+                  - step:
+                      type: ShellScript
+                      name: ShellScript_1
+                      identifier: ShellScript_1
+                      spec:
+                        shell: Bash
+                        executionTarget: {}
+                        source:
+                          type: Inline
+                          spec:
+                            script: echo "<+matrix.tagsToRun>"
+                        environmentVariables: []
+                        outputVariables: []
+                      timeout: 10m
+                      strategy:
+                        matrix:
+                          tagsToRun: <+stage.variables.tags1.split(',')>
+            tags: {}
