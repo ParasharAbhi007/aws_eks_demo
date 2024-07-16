@@ -31,13 +31,6 @@ pipeline:
                       strategy:
                         matrix:
                           tagsToExecute2: <+stage.variables.tags2.split(',')>
-                  - step:
-                      type: Barrier
-                      name: Barrier_1
-                      identifier: Barrier_1
-                      spec:
-                        barrierRef: njk
-                      timeout: 10m
             tags: {}
             failureStrategies:
               - onFailure:
