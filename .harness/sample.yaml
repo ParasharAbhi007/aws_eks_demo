@@ -109,3 +109,7 @@ pipeline:
                 description: ""
                 required: false
                 value: "@3yes"
+  flowControl:
+    barriers:
+      - name: njk
+        identifier: njk
