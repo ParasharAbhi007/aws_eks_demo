@@ -62,7 +62,9 @@ pipeline:
                         source:
                           type: Inline
                           spec:
-                            script: "exit 1 "
+                            script: |-
+                              sleep 5s
+                              exit 1 
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
