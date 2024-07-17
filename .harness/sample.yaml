@@ -77,6 +77,12 @@ pipeline:
                 description: ""
                 required: false
                 value: "@3yes"
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: MarkAsFailure
   flowControl:
     barriers:
       - name: njk
