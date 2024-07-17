@@ -45,38 +45,6 @@ pipeline:
                 required: false
                 value: "@2taggo,@2tagjgj"
         - stage:
-            name: auto1
-            identifier: auto1
-            description: ""
-            type: Custom
-            spec:
-              execution:
-                steps:
-                  - step:
-                      type: ShellScript
-                      name: ShellScript_1
-                      identifier: ShellScript_1
-                      spec:
-                        shell: Bash
-                        executionTarget: {}
-                        source:
-                          type: Inline
-                          spec:
-                            script: echo "<+matrix.tagsToRun>"
-                        environmentVariables: []
-                        outputVariables: []
-                      timeout: 10m
-                      strategy:
-                        matrix:
-                          tagsToRun: <+stage.variables.tags1.split(',')>
-            tags: {}
-            variables:
-              - name: tags1
-                type: String
-                description: ""
-                required: false
-                value: "@1tag,@1taggidy,@1taggiedye"
-        - stage:
             name: auto3
             identifier: auto3
             description: ""
@@ -94,7 +62,7 @@ pipeline:
                         source:
                           type: Inline
                           spec:
-                            script: "echo "
+                            script: "exit 1 "
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
