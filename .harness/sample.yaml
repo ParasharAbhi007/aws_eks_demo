@@ -24,7 +24,7 @@ pipeline:
                         source:
                           type: Inline
                           spec:
-                            script: echo "<+matrix.tagsToExecute2>"
+                            script: sleep 1m
                         environmentVariables: []
                         outputVariables: []
                       timeout: 10m
