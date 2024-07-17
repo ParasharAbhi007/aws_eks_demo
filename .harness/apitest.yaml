@@ -155,3 +155,9 @@ pipeline:
                 type: StageRollback
   notificationRules: []
   allowStageExecutions: true
+  variables:
+    - name: k8s
+      type: String
+      description: ""
+      required: false
+      value: DockerTestk8
