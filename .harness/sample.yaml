@@ -84,7 +84,7 @@ pipeline:
                   errors:
                     - AllErrors
                   action:
-                    type: MarkAsFailure
+                    type: Abort
   flowControl:
     barriers:
       - name: njk
