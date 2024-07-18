@@ -25,7 +25,11 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+trigger.payload.artifactData.metadata[?(@.key=="fileName")].value>
+                        script: |-
+                          echo <+trigger.payload.artifactData.metadata[?(@.key=="fileName")].value>
+                          echo "hi"
+                          echo <+trigger.payload.artifactData.metadata>
+                          echo <+trigger.payload.artifactData.metadata.key==fileName.value>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
