@@ -31,5 +31,18 @@ pipeline:
                     outputVariables: []
                   timeout: 10m
         tags: {}
-  notificationRules: []
+  notificationRules:
+    - name: test
+      identifier: test
+      pipelineEvents:
+        - type: PipelineEnd
+        - type: PipelineFailed
+        - type: PipelineSuccess
+      notificationMethod:
+        type: Email
+        spec:
+          userGroups: []
+          recipients:
+            - abhinandan.parashar@harness.io
+      enabled: true
   allowStageExecutions: true
