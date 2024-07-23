@@ -25,7 +25,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+trigger.payload>
+                        script: echo <+trigger>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
