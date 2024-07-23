@@ -25,9 +25,9 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
+                        script: |-
                           echo <+json.select("artifactData.metadata[?(@.key == 'Accept-Ranges')].value",<+json.format(<+trigger.payload>)>)>
-                          echo '<+tirgger.payload>'
+                          echo <+tirgger.payload>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
