@@ -26,9 +26,8 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
-                          echo <+eventPayload>
-                          echo "Hello"
-                          echo json.format(<+eventPayload>)
+                          echo <+trigger.artifact.metadata.Accept-Ranges>
+                          echo <+json.select("artifact.metadata.Accept-Range",<+josn.format(<+trigger>)>)>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
