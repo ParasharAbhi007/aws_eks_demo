@@ -25,7 +25,9 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+trigger.artifact.metadata.fileName>
+                        script: |-
+                          echo <+trigger.artifact.metadata.fileName>
+                          echo <+trigger.artifact.metadata."Accept-Ranges">
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
