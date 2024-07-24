@@ -25,8 +25,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
-                          echo <+trigger.artifact>
+                        script: echo <+trigger.artifact.metadata.fileName>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
