@@ -27,7 +27,7 @@ pipeline:
                       spec:
                         script: |-
                           echo <+trigger.artifact.metadata.Accept-Ranges>
-                          echo <+json.select("artifact.metadata.Accept-Range",<+josn.format(<+trigger>)>)>
+                          echo <+json.select("artifact.metadata.Accept-Range",<+json.format(<+trigger>)>)>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
