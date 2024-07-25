@@ -43,6 +43,7 @@ pipeline:
           project: CSETest1
           inputSetReferences:
             - dfdrf
+        tags: {}
   notificationRules:
     - name: test
       identifier: test
