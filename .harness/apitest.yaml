@@ -32,6 +32,17 @@ pipeline:
                     outputVariables: []
                   timeout: 10m
         tags: {}
+    - stage:
+        name: git
+        identifier: git
+        description: ""
+        type: Pipeline
+        spec:
+          org: AbhiOrg
+          pipeline: gitconfig
+          project: CSETest1
+          inputSetReferences:
+            - dfdrf
   notificationRules:
     - name: test
       identifier: test
