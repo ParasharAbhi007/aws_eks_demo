@@ -61,10 +61,6 @@ pipeline:
               - name: test
                 type: String
                 value: <+input>
-            properties:
-              ci:
-                codebase:
-                  build: <+input>
         tags: {}
   notificationRules:
     - name: test
