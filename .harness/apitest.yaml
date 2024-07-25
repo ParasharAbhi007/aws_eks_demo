@@ -41,8 +41,30 @@ pipeline:
           org: AbhiOrg
           pipeline: gitconfig
           project: CSETest1
-          inputSetReferences:
-            - dfdrf
+          inputs:
+            identifier: gitconfig
+            stages:
+              - stage:
+                  identifier: dep
+                  type: Deployment
+                  spec:
+                    service:
+                      serviceInputs:
+                        serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                            artifacts:
+                              primary:
+                                primaryArtifactRef: <+input>
+                                sources: <+input>
+            variables:
+              - name: test
+                type: String
+                value: <+input>
+            properties:
+              ci:
+                codebase:
+                  build: <+input>
         tags: {}
   notificationRules:
     - name: test
