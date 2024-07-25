@@ -1,0 +1,36 @@
+inputSet:
+  name: newsd
+  identifier: newsd
+  orgIdentifier: AbhiOrg
+  projectIdentifier: CSETest1
+  pipeline:
+    identifier: apitest
+    stages:
+      - stage:
+          identifier: git
+          type: Pipeline
+          spec:
+            inputs:
+              identifier: gitconfig
+              stages:
+                - stage:
+                    identifier: dep
+                    type: Deployment
+                    spec:
+                      service:
+                        serviceInputs:
+                          serviceDefinition:
+                            type: Kubernetes
+                            spec:
+                              artifacts:
+                                primary:
+                                  primaryArtifactRef: test
+                                  sources:
+                                    - identifier: test
+                                      type: DockerRegistry
+                                      spec:
+                                        tag: <+input>
+              variables:
+                - name: test
+                  type: String
+                  value: <+input>
