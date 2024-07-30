@@ -41,6 +41,56 @@ pipeline:
             description: tags to run in auto2
             required: false
             value: "@2taggo,@2tagjgj"
+    - stage:
+        name: cd
+        identifier: cd
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: k8service
+            serviceInputs:
+              serviceDefinition:
+                type: Kubernetes
+                spec:
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: <+input>
+                      sources: <+input>
+          environment:
+            environmentRef: ECS_INFRA
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: two
+          execution:
+            steps:
+              - step:
+                  type: TerraformPlan
+                  name: TerraformPlan_1
+                  identifier: TerraformPlan_1
+                  spec:
+                    provisionerIdentifier: ids
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          spec:
+                            connectorRef: account.AbhinandanGit
+                            repoName: EKS_Demo
+                            gitFetchType: Branch
+                            branch: main
+                            folderPath: /
+                          type: Github
+                      secretManagerRef: account.azurevault
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors: []
+              action:
+                type: StageRollback
   flowControl:
     barriers:
       - name: njk
