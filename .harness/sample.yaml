@@ -6,42 +6,6 @@ pipeline:
   tags: {}
   stages:
     - stage:
-        identifier: auto2
-        type: Custom
-        name: auto2
-        description: ""
-        spec:
-          execution:
-            steps:
-              - step:
-                  identifier: ShellScript_1
-                  type: ShellScript
-                  name: ShellScript_1
-                  spec:
-                    shell: Bash
-                    executionTarget: {}
-                    source:
-                      type: Inline
-                      spec:
-                        script: |
-                          echo <+secrets.getValue("account.azurevault")>
-                    environmentVariables: []
-                    outputVariables: []
-                  timeout: 10m
-        tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: Ignore
-        variables:
-          - name: tags2
-            type: String
-            description: tags to run in auto2
-            required: false
-            value: "@2taggo,@2tagjgj"
-    - stage:
         name: cd
         identifier: cd
         description: ""
@@ -49,15 +13,7 @@ pipeline:
         spec:
           deploymentType: Kubernetes
           service:
-            serviceRef: k8service
-            serviceInputs:
-              serviceDefinition:
-                type: Kubernetes
-                spec:
-                  artifacts:
-                    primary:
-                      primaryArtifactRef: <+input>
-                      sources: <+input>
+            serviceRef: test34
           environment:
             environmentRef: ECS_INFRA
             deployToAll: false
