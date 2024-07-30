@@ -83,6 +83,7 @@ pipeline:
                             folderPath: /
                           type: Github
                       secretManagerRef: account.azurevault
+                      skipRefreshCommand: false
                   timeout: 10m
             rollbackSteps: []
         tags: {}
