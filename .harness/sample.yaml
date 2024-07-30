@@ -5,86 +5,45 @@ pipeline:
   orgIdentifier: AbhiOrg
   tags: {}
   stages:
-    - parallel:
-        - stage:
-            identifier: auto2
-            type: Custom
-            name: auto2
-            description: ""
-            spec:
-              execution:
-                steps:
-                  - step:
-                      identifier: ShellScript_1
-                      type: ShellScript
-                      name: ShellScript_1
+    - stage:
+        identifier: auto2
+        type: Custom
+        name: auto2
+        description: ""
+        spec:
+          execution:
+            steps:
+              - step:
+                  identifier: ShellScript_1
+                  type: ShellScript
+                  name: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
                       spec:
-                        shell: Bash
-                        executionTarget: {}
-                        source:
-                          type: Inline
-                          spec:
-                            script: sleep 1m
-                        environmentVariables: []
-                        outputVariables: []
-                      timeout: 10m
-                      strategy:
-                        matrix:
-                          tagsToExecute2: <+stage.variables.tags2.split(',')>
-            tags: {}
-            failureStrategies:
-              - onFailure:
-                  errors:
-                    - AllErrors
-                  action:
-                    type: Ignore
-            variables:
-              - name: tags2
-                type: String
-                description: tags to run in auto2
-                required: false
-                value: "@2taggo,@2tagjgj"
-        - stage:
-            name: auto3
-            identifier: auto3
-            description: ""
-            type: Custom
-            spec:
-              execution:
-                steps:
-                  - step:
-                      type: ShellScript
-                      name: ShellScript_1
-                      identifier: ShellScript_1
-                      spec:
-                        shell: Bash
-                        executionTarget: {}
-                        source:
-                          type: Inline
-                          spec:
-                            script: |-
-                              sleep 5s
-                              exit 1 
-                        environmentVariables: []
-                        outputVariables: []
-                      timeout: 10m
-                      strategy:
-                        matrix:
-                          tagsToExecute3: <+stage.variables.tags3.split(",")>
-                        when: "!empty(<+stage.variables.tags3>)"
-            tags: {}
-            variables:
-              - name: tags3
-                type: String
-                description: ""
-                required: false
-                value: "@3yes"
-            failureStrategies:
-              - onFailure:
-                  errors:
-                    - AllErrors
-                  action:
-                    type: Abort
+                        script: |
+                          echo <+secrets.getValue("account.azurevault")>
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+                  strategy:
+                    matrix:
+                      tagsToExecute2: <+stage.variables.tags2.split(',')>
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: Ignore
+        variables:
+          - name: tags2
+            type: String
+            description: tags to run in auto2
+            required: false
+            value: "@2taggo,@2tagjgj"
   flowControl:
     barriers:
       - name: njk
