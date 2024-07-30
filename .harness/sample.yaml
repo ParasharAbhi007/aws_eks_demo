@@ -28,9 +28,6 @@ pipeline:
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
-                  strategy:
-                    matrix:
-                      tagsToExecute2: <+stage.variables.tags2.split(',')>
         tags: {}
         failureStrategies:
           - onFailure:
