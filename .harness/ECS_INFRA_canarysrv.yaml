@@ -16,7 +16,7 @@ overrides:
             spec:
               connectorRef: account.AbhinandanGit
               gitFetchType: Branch
-              branch: branchtest
+              branch: main
               commitId: null
               paths:
                 - .harness/test.yaml
