@@ -4,3 +4,7 @@ overrides:
       type: String
       value: hbj
       required: false
+    - name: jn
+      type: String
+      value: 'jn '
+      required: false
