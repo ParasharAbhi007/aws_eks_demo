@@ -6,7 +6,7 @@ overrides:
       required: false
     - name: jn
       type: String
-      value: 'jn '
+      value: jn n
       required: false
   configFiles:
     - configFile:
