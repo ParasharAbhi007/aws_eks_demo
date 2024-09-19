@@ -8,3 +8,18 @@ overrides:
       type: String
       value: 'jn '
       required: false
+  configFiles:
+    - configFile:
+        identifier: chanfe
+        spec:
+          store:
+            spec:
+              connectorRef: account.AbhinandanGit
+              gitFetchType: Branch
+              branch: main
+              commitId: null
+              paths:
+                - .harness/test.yaml
+              folderPath: null
+              repoName: charts
+            type: Github
