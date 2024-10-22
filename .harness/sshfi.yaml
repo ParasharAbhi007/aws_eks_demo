@@ -1,5 +1,7 @@
-service:
-  name: sshfi
-  identifier: sshfi
+environment:
+  name: jjj
+  identifier: jjj
+  tags: {}
+  type: PreProduction
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
