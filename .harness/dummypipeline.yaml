@@ -1,0 +1,75 @@
+pipeline:
+  name: dummypipeline
+  identifier: dummypipeline
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  tags: {}
+  stages:
+    - stage:
+        name: check
+        identifier: check
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          echo '<+secrets.getValue("account.abhishek")>' > file.json
+                          cat file.json
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+          environment:
+            environmentRef: ECS_INFRA
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helm
+        tags: {}
+    - stage:
+        name: vbn
+        identifier: vbn
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: false
+          caching:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    connectorRef: <+input>
+                    image: <+input>
+                    shell: Sh
+                    command: hn
+  variables:
+    - name: one
+      type: String
+      description: ""
+      required: false
+      value: k8service
+    - name: oneK8S
+      type: String
+      description: ""
+      required: false
+      value: "true"
+  allowStageExecutions: true
