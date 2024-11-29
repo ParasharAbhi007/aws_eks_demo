@@ -34,7 +34,9 @@ pipeline:
                   name: HarnessApproval_1
                   identifier: HarnessApproval_1
                   spec:
-                    approvalMessage: Please review the following information and approve the pipeline progression <+pipeline.variables.oneK8S>
+                    approvalMessage: |-
+                      <+pipeline.stages.check.spec.execution.steps.HarnessApproval_1.spec.approverInputs[0].defaultValue>
+                      <+pipeline.stages.check.spec.execution.steps.HarnessApproval_1.spec.approverInputs[0].name>
                     includePipelineExecutionHistory: true
                     isAutoRejectEnabled: false
                     approvers:
