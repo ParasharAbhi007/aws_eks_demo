@@ -52,32 +52,6 @@ pipeline:
             infrastructureDefinitions:
               - identifier: helm
         tags: {}
-    - stage:
-        name: vbn
-        identifier: vbn
-        description: ""
-        type: CI
-        spec:
-          cloneCodebase: false
-          caching:
-            enabled: true
-          platform:
-            os: Linux
-            arch: Amd64
-          runtime:
-            type: Cloud
-            spec: {}
-          execution:
-            steps:
-              - step:
-                  type: Run
-                  name: Run_1
-                  identifier: Run_1
-                  spec:
-                    connectorRef: <+input>
-                    image: <+input>
-                    shell: Sh
-                    command: hn
   variables:
     - name: one
       type: String
