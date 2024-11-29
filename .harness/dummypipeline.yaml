@@ -43,8 +43,8 @@ pipeline:
                       minimumCount: 1
                       disallowPipelineExecutor: false
                     approverInputs:
-                      - name: "input "
-                        defaultValue: input
+                      - name: hello
+                        defaultValue: hellooo
                   timeout: 1d
           environment:
             environmentRef: ECS_INFRA
