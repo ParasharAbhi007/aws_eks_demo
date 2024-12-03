@@ -1,0 +1,10 @@
+pipeline:
+  name: remo
+  identifier: remo
+  tags: {}
+  template:
+    templateRef: account.pipelinetemp
+    versionLabel: "1.0"
+    gitBranch: master
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
