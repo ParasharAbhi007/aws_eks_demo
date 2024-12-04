@@ -23,31 +23,10 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
-                          echo '<+secrets.getValue("account.abhishek")>' > file.json
-                          cat file.json
+                        script: sleep 120s
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
-              - step:
-                  type: HarnessApproval
-                  name: HarnessApproval_1
-                  identifier: HarnessApproval_1
-                  spec:
-                    approvalMessage: |-
-                      <+pipeline.stages.check.spec.execution.steps.HarnessApproval_1.spec.approverInputs[0].defaultValue>
-                      <+pipeline.stages.check.spec.execution.steps.HarnessApproval_1.spec.approverInputs[0].name>
-                    includePipelineExecutionHistory: true
-                    isAutoRejectEnabled: false
-                    approvers:
-                      userGroups:
-                        - abhi
-                      minimumCount: 1
-                      disallowPipelineExecutor: false
-                    approverInputs:
-                      - name: hello
-                        defaultValue: hellooo
-                  timeout: 1d
           environment:
             environmentRef: ECS_INFRA
             deployToAll: false
