@@ -23,7 +23,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: sleep 120s
+                        script: jq '.name' data.json
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
