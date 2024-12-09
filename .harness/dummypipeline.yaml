@@ -31,9 +31,14 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+stage.output.hosts.join(",")>
+                        script: |-
+                          echo <+stage.output.hosts>
+                          hosts_n = <+stage.output.hosts>
                     environmentVariables: []
-                    outputVariables: []
+                    outputVariables:
+                      - name: hosts_n
+                        type: String
+                        value: hosts_n
                   timeout: 10m
                   strategy:
                     repeat:
