@@ -83,7 +83,7 @@ pipeline:
                       spec:
                         script: |-
                           echo "heyh"
-                          echo <+stage.output.hosts.split(",")>
+                          echo <+pipeline.stages.dep.variables.hostname.split(",")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
