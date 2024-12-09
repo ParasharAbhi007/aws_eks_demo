@@ -98,7 +98,7 @@ pipeline:
                 type: StageRollback
         strategy:
           repeat:
-            items: <+pipeline.stages.dep.variables.hostname.split(",")>
+            items: <+stage.output.hosts>
   variables:
     - name: one
       type: String
