@@ -55,7 +55,7 @@ pipeline:
             type: String
             description: ""
             required: false
-            value: <+stage.output.hosts>
+            value: <+stage.output.hosts.split(',')
     - stage:
         name: deps
         identifier: deps
