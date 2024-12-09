@@ -34,6 +34,7 @@ pipeline:
                         script: |-
                           echo "hey"
                           echo <+stage.output.hosts>
+                          echo <+pipeline.stages.dep.variables.hostname.split(",")>
                           echo <+stage.output.hosts.split(",")>
                     environmentVariables: []
                     outputVariables: []
