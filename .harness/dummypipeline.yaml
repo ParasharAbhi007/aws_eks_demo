@@ -31,9 +31,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |-
-                          echo <+stage.output.hosts>
-                          name = <+stage.output.hosts>
+                        script: name=$(echo <+stage.output.hosts>)
                     environmentVariables: []
                     outputVariables:
                       - name: name
