@@ -49,7 +49,7 @@ pipeline:
             type: String
             description: ""
             required: false
-            value: <+stage.output.hosts>.split(",")
+            value: <+<+stage.output.hosts>.split(",")>
     - stage:
         name: g
         identifier: g
