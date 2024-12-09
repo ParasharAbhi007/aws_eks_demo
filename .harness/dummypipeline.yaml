@@ -33,12 +33,12 @@ pipeline:
                       spec:
                         script: |-
                           echo <+stage.output.hosts>
-                          export hosts_n = <+stage.output.hosts>
+                          name = <+stage.output.hosts>
                     environmentVariables: []
                     outputVariables:
-                      - name: hosts_n
+                      - name: name
                         type: String
-                        value: hosts_n
+                        value: name
                   timeout: 10m
             rollbackSteps: []
         tags: {}
