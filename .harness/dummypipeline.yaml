@@ -123,6 +123,12 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+        variables:
+          - name: hostname
+            type: String
+            description: ""
+            required: false
+            value: <+stage.output.hosts.split(",")>
   variables:
     - name: one
       type: String
