@@ -24,7 +24,7 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
-                          echo <+stage.output.hosts>.split(',')
+                          echo <+stage.output.hosts>.split(",")
                           echo "heko"
                           echo <+stage.output.hosts>
                     environmentVariables: []
