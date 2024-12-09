@@ -40,9 +40,6 @@ pipeline:
                         type: String
                         value: hosts_n
                   timeout: 10m
-                  strategy:
-                    repeat:
-                      items: <+stage.output.hosts>
             rollbackSteps: []
         tags: {}
         failureStrategies:
