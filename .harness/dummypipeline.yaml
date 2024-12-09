@@ -70,6 +70,9 @@ pipeline:
                     outputVariables: []
                   timeout: 10m
         tags: {}
+        strategy:
+          repeat:
+            items: <+pipeline.stages.check.variables.hostsname>
   variables:
     - name: one
       type: String
