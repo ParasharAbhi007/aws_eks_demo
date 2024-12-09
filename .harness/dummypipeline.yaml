@@ -77,11 +77,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |-
-                          echo "heyh"
-                          echo <+(pipeline.stages.dep.variables.hostname).replaceAll("\\[|\\]", "").split(",")>
-                          echo <+(pipeline.stages.dep.variables.hostname).replaceAll("\\[|\\]", "").split(",")>
-                          echo <+(pipeline.stages.dep.variables.hostname.join(",")).replaceAll("\\[|\\]", "").split(",")>
+                        script: echo <+stage.output.hosts>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
