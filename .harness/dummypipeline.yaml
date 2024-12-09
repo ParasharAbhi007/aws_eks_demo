@@ -33,7 +33,7 @@ pipeline:
                       spec:
                         script: |-
                           echo <+stage.output.hosts>
-                          hosts_n = <+stage.output.hosts>
+                          export hosts_n = <+stage.output.hosts>
                     environmentVariables: []
                     outputVariables:
                       - name: hosts_n
