@@ -31,7 +31,9 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo "hey"
+                        script: |-
+                          echo "hey"
+                          echo <+stage.output.hosts.split(",")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
@@ -74,7 +76,9 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo "heyh"
+                        script: |-
+                          echo "heyh"
+                          echo <+stage.output.hosts.split(",")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
