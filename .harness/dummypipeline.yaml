@@ -39,6 +39,9 @@ pipeline:
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
+                  strategy:
+                    repeat:
+                      items: <+pipeline.stages.dep.variables.hostname.split(",")>
             rollbackSteps: []
         tags: {}
         failureStrategies:
