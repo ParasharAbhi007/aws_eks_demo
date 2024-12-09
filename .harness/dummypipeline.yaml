@@ -51,7 +51,7 @@ pipeline:
             type: String
             description: ""
             required: false
-            value: <+stage.output.hosts.join(",")>
+            value: <+stage.output.hosts>
     - stage:
         name: deps
         identifier: deps
