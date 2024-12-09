@@ -33,7 +33,7 @@ pipeline:
                       spec:
                         script: |-
                           echo "hey"
-                          echo "Resolved hosts: <+toJson(stage.output.hosts)>"
+                          echo "Resolved hosts: <+toJson<+stage.output.hosts>>"
                           echo <+stage.output.hosts>
                           echo <+stage.output.hosts.split(",")>
                     environmentVariables: []
