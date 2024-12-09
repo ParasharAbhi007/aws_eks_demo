@@ -55,7 +55,7 @@ pipeline:
             type: String
             description: ""
             required: false
-            value: <+stage.output.hosts.split(',')
+            value: <+stage.output.hosts.split(',')>
     - stage:
         name: deps
         identifier: deps
@@ -97,7 +97,7 @@ pipeline:
                 type: StageRollback
         strategy:
           repeat:
-            items: <+pipeline.stages.dep.variables.hostname.split('\,')>
+            items: <+pipeline.stages.dep.variables.hostname>
   variables:
     - name: one
       type: String
