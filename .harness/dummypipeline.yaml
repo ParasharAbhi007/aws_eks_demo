@@ -35,6 +35,9 @@ pipeline:
                           - AllErrors
                         action:
                           type: Ignore
+                  strategy:
+                    repeat:
+                      items: <+stage.output.hosts>
           environment:
             environmentRef: ssh
             deployToAll: false
@@ -46,7 +49,7 @@ pipeline:
             type: String
             description: ""
             required: false
-            value: <+stage.output.hosts>
+            value: <+input>
     - stage:
         name: g
         identifier: g
