@@ -33,6 +33,7 @@ pipeline:
                       spec:
                         script: |-
                           echo "hey"
+                          echo <+stage.output.hosts>
                           echo <+stage.output.hosts.split(",")>
                     environmentVariables: []
                     outputVariables: []
