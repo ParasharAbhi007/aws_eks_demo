@@ -41,6 +41,29 @@ pipeline:
             infrastructureDefinitions:
               - identifier: helm
         tags: {}
+    - stage:
+        name: g
+        identifier: g
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo "hey"
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+        tags: {}
   variables:
     - name: one
       type: String
