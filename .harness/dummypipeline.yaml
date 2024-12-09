@@ -41,7 +41,7 @@ pipeline:
                   timeout: 10m
                   strategy:
                     repeat:
-                      items: <+pipeline.stages.dep.variables.hostname.split(",")>
+                      items: <+stage.output.hosts>
             rollbackSteps: []
         tags: {}
         failureStrategies:
