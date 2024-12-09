@@ -95,7 +95,7 @@ pipeline:
                 type: StageRollback
         strategy:
           repeat:
-            items: <+pipeline.stages.dep.spec.execution.steps.ShellScript_1.output.outputVariables.hosts_n>.split(",")
+            items: <+pipeline.stages.dep.spec.execution.steps.ShellScript_1.output.outputVariables.name>.split(",")
   variables:
     - name: one
       type: String
