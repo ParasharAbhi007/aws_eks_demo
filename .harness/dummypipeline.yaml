@@ -23,10 +23,18 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo <+pipeline.execution.url>
+                        script: |-
+                          echo <+pipeline.execution.url>
+                          exit 1
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
           environment:
             environmentRef: ECS_INFRA
             deployToAll: false
