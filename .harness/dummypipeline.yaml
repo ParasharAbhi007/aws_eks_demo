@@ -97,7 +97,7 @@ pipeline:
                 type: StageRollback
         strategy:
           repeat:
-            items: <+pipeline.stages.dep.variables.hostname>
+            items: <+pipeline.stages.dep.variables.hostname.replaceAll("[\\[\\]]", "").split(",")>
   variables:
     - name: one
       type: String
