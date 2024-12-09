@@ -36,11 +36,17 @@ pipeline:
                         action:
                           type: Ignore
           environment:
-            environmentRef: ECS_INFRA
+            environmentRef: ssh
             deployToAll: false
             infrastructureDefinitions:
-              - identifier: helm
+              - identifier: fssh
         tags: {}
+        variables:
+          - name: hostsname
+            type: String
+            description: ""
+            required: false
+            value: <+stage.output.hosts>
     - stage:
         name: g
         identifier: g
