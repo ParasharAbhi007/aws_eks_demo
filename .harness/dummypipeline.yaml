@@ -31,12 +31,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |-
-                          echo "hey"
-                          echo <+stage.output.hosts>
-                          echo <+pipeline.stages.dep.variables.hostname.split(",")>
-                          echo <+stage.output.hosts.join(",")>
-                          echo <+stage.output.hosts.split(",")>
+                        script: echo <+stage.output.hosts.join(",")>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
