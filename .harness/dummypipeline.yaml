@@ -24,8 +24,9 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
-                          echo <+pipeline.execution.url>
-                          exit 1
+                          echo <+stage.output.hosts>.split(',')
+                          echo "heko"
+                          echo <+stage.output.hosts>
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
