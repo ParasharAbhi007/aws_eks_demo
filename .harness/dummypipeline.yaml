@@ -31,7 +31,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: name=$(echo <+stage.output.hosts>)
+                        script: name=$(echo <+stage.output.hosts> | sed 's/[\[\]]//g')
                     environmentVariables: []
                     outputVariables:
                       - name: name
