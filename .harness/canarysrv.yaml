@@ -3,23 +3,6 @@ service:
   identifier: canarysrv
   tags: {}
   serviceDefinition:
-    spec:
-      manifests:
-        - manifest:
-            identifier: re
-            type: HelmChart
-            spec:
-              store:
-                type: Harness
-                spec:
-                  files:
-                    - /CordaNetwork-dev0
-              valuesPaths:
-                - /CordaNetwork-dev0
-              helmVersion: V3
-              skipResourceVersioning: false
-              enableDeclarativeRollback: false
-              fetchHelmChartMetadata: false
     type: Kubernetes
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1

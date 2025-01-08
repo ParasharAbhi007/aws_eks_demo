@@ -1,0 +1,7 @@
+environment:
+  name: jjjnew
+  identifier: jjjnew
+  tags: {}
+  type: PreProduction
+  orgIdentifier: AbhiOrg
+  projectIdentifier: CSETest1

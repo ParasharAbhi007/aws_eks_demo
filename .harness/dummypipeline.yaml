@@ -1,0 +1,106 @@
+pipeline:
+  name: dummypipeline
+  identifier: dummypipeline
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  tags: {}
+  stages:
+    - stage:
+        name: dep
+        identifier: dep
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Ssh
+          service:
+            serviceRef: ssh
+          environment:
+            environmentRef: ssh
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: fssh
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: name=$(echo <+stage.output.hosts> | sed 's/[\[\]]//g')
+                    environmentVariables: []
+                    outputVariables:
+                      - name: name
+                        type: String
+                        value: name
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+        variables:
+          - name: hostname
+            type: String
+            description: ""
+            required: false
+            value: <+stage.output.hosts>
+    - stage:
+        name: deps
+        identifier: deps
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Ssh
+          service:
+            useFromStage:
+              stage: dep
+          environment:
+            useFromStage:
+              stage: dep
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo <+stage.output.hosts>
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+        strategy:
+          repeat:
+            items: <+pipeline.stages.dep.spec.execution.steps.ShellScript_1.output.outputVariables.name>.split(",")
+  variables:
+    - name: one
+      type: String
+      description: ""
+      required: false
+      value: k8service
+    - name: oneK8S
+      type: String
+      description: ""
+      required: false
+      value: "true"
+  allowStageExecutions: true
