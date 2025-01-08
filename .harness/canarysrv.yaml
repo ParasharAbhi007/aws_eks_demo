@@ -3,7 +3,6 @@ service:
   identifier: canarysrv
   tags: {}
   serviceDefinition:
-    spec: {}
     type: Kubernetes
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
