@@ -1,0 +1,312 @@
+template:
+  name: SEAL_AppSec_Scan_Step_Template
+  identifier: SEAL_AppSec_Scan_Step_Template
+  type: Step
+  tags:
+    Owner: seal
+    Purpose: CxOneScan
+    bh: ""
+  spec:
+    type: Run
+    spec:
+      connectorRef: account.harnessImage
+      image: <+input>.default("artifed.transunion.com/infosec-docker-dev-local/cxone-scanner:alma-1.0.2")
+      shell: Bash
+      command: |-
+        # printenv
+        IMAGE=<+spec.image>
+        # echo "IMAGE is set to: $IMAGEs"
+        uname -a
+        cat /etc/os-release
+        # ls -alh /opt
+        CX_PROJECT=<+stepGroup.variables.CX_PROJECT>
+        if [ "$CX_PROJECT" = "" ]; then
+          echo "The Checkmarx Project Name variable \"cx_projectName\" variable is not set in your Harness Project Settings. This value, assigned by the AppSec Team, is required." \
+          "If you have not onboarded your project into Checkmarx to receive a CxOne project name, please see this link: https://transunion.atlassian.net/wiki/spaces/TUCTP/pages/2215084220/AppSec+FAQ#AppSecFAQ-HowDoIOnboardintoSSDLCTooling?";
+          exit 1
+        else
+          echo "CX_PROJECT is set to: $CX_PROJECT";
+        fi &&
+        #apt-get update && apt-get install -y --no-install-recommends gcc ca-certificates wget curl git &&
+        #wget https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz &&
+        #tar -xzvf ScaResolver-linux64.tar.gz &&
+        #rm -rf ScaResolver-linux64.tar.gz &&
+        #wget https://github.com/Checkmarx/ast-cli/releases/download/2.2.3/ast-cli_2.2.3_linux_x64.tar.gz &&
+        #tar -xzvf ast-cli_2.2.3_linux_x64.tar.gz &&
+        #rm -rf ast-cli_2.2.3_linux_x64.tar.gz &&
+        #echo "Printing out all env variables:" &&
+        # printenv;
+        # Look for URLs to help AppSec team in troubleshooting, add to tags
+        if [ -z "$CI_BUILD_LINK" ]; then 
+          if [ -z "$DRONE_BUILD_LINK" ]; then 
+            echo "CI_BUILD_LINK and DRONE_BUILD_LINK were not found.";
+            CI_BUILD_LINK="https://";
+          else 
+            CI_BUILD_LINK="$DRONE_BUILD_LINK";
+          fi
+        fi;
+        if [ -z "$CI_REPO_LINK" ]; then 
+          if [ -z "$DRONE_REPO_LINK" ]; then 
+            echo "CI_REPO_LINK and DRONE_REPO_LINK were not found.";
+            CI_REPO_LINK="https://";
+          else 
+            CI_REPO_LINK=$DRONE_REPO_LINK;
+          fi;
+        fi;
+        # Remove colons from tags
+        MODIFIED_BUILD_LINK=$(echo "$CI_BUILD_LINK" | sed 's|https://||');
+        CX_PROJECT_TAGS="scmProject:$HARNESS_PROJECT_ID,CI_BUILD_LINK:$MODIFIED_BUILD_LINK";
+        MODIFIED_REPO_LINK=$(echo "$CI_REPO_LINK" | sed 's|https://||');
+        # Configure all the tags for the AppSec team
+        TAGS="";
+        if [ "$MODIFIED_BUILD_LINK" = "" ]; then
+          TAGS="CI_BUILD_LINK:";
+        else
+          TAGS="CI_BUILD_LINK:$MODIFIED_BUILD_LINK";
+        fi;
+        if [ "$MODIFIED_REPO_LINK" = "" ]; then
+          TAGS="$TAGS,CI_REPO_LINK:";
+        else
+          TAGS="$TAGS,CI_REPO_LINK:$MODIFIED_REPO_LINK";
+        fi;
+        if [ "$CI_COMMIT_SHA" = "" ]; then
+          TAGS="$TAGS,CI_COMMIT_SHA:";
+        else
+          TAGS="$TAGS,CI_COMMIT_SHA:$CI_COMMIT_SHA";
+        fi;
+        if [ "$CI_COMMIT_BRANCH" = "" ]; then
+          TAGS="$TAGS,CI_COMMIT_COMMIT_BRANCH:";
+        else
+          TAGS="$TAGS,CI_COMMIT_BRANCH:$CI_COMMIT_BRANCH";
+        fi;
+        if [ "$CI_REPO" = "" ]; then
+          TAGS="$TAGS,CI_REPO:";
+        else
+          TAGS="$TAGS,CI_REPO:$CI_REPO";
+        fi;
+        if [ "$CI_COMMIT_AUTHOR_NAME" = "" ]; then
+          TAGS="$TAGS,CI_COMMIT_AUTHOR_NAME:";
+        else
+          TAGS="$TAGS,CI_COMMIT_AUTHOR_NAME:$CI_COMMIT_AUTHOR_NAME";
+        fi;
+        if [ "$CI_COMMIT_AUTHOR_EMAIL" = "" ]; then
+          TAGS="$TAGS,CI_COMMIT_AUTHOR_EMAIL:";
+        else
+          TAGS="$TAGS,CI_COMMIT_AUTHOR_EMAIL:$CI_COMMIT_AUTHOR_EMAIL";
+        fi;
+
+        # Configure SCA Resolver parameters
+        CLI_PARAMS="";
+        RESOLVER_PARAMS="";
+        ARGS="";
+        if [ "$CX_DEBUG" = "true" ]; then 
+          echo "debug is set to: true";
+          CLI_PARAMS="--debug";
+          ARGS="--log-level Debug";
+        else
+          echo "debug is set to: false";
+        fi;
+        if [ -n "$CX_MAVEN_PARAMS" ]; then
+          ARGS="$ARGS --maven-parameters='$CX_MAVEN_PARAMS'";
+        fi;
+        if [ -n "$CX_GRADLE_PARAMS" ]; then
+          ARGS="$ARGS --gradle-parameters='$CX_GRADLE_PARAMS'";
+        fi;
+        if [ -n "$CX_NPM_PARAMS" ]; then
+          ARGS="$ARGS --npm-parameters='$CX_NPM_PARAMS'";
+        fi;
+        if [ -n "$CX_PIP_PARAMS" ]; then
+          ARGS="$ARGS --pip-parameters='$CX_PIP_PARAMS'";
+        fi;
+        if [ -n "$CX_YARN_PARAMS" ]; then
+          ARGS="$ARGS --yarn-parameters='$CX_YARN_PARAMS'";
+        fi;
+        if [ "$ARGS" = "" ]; then
+          RESOLVER_PARAMS="";
+        else
+          RESOLVER_PARAMS="--sca-resolver-params \"$ARGS\"";
+        fi;
+
+        # Check if the branch is production, do not allow async scans
+        case "$DRONE_BRANCH" in 
+          production|prod|master|main|sast)
+            echo "DRONE_BRANCH is set to: $DRONE_BRANCH. Async disabled."
+            CX_ASYNC="false"
+            ;;
+          *)
+            # Async allowed on non-production branches
+            ;;
+        esac;
+        case "$DRONE_TARGET_BRANCH" in 
+          production|prod|master|main|sast)
+            echo "DRONE_TARGET_BRANCH is set to: $DRONE_TARGET_BRANCH. Async disabled."
+            CX_ASYNC="false"
+            ;;
+          *)
+            # Async allowed on non-production branches
+            ;;
+        esac;
+        case "$CI_COMMIT_BRANCH" in 
+          production|prod|master|main|sast)
+            echo "CI_COMMIT_BRANCH is set to: $CI_COMMIT_BRANCH. Async disabled."
+            CX_ASYNC="false"
+            ;;
+          *)
+            # Async allowed on non-production branches
+            ;;
+        esac;
+        if [ "$CX_ASYNC" = "true" ]; then
+          echo "scanType is: async";
+          ASYNC_PARAMS="--async";
+        else
+          echo "scanType is: full"; 
+          ASYNC_PARAMS="--wait-delay 10 --scan-timeout $CX_SCAN_TIMEOUT --report-format sarif";
+          export CX_REPORT="/harness/$CX_OUTPUT_NAME.sarif";
+        fi;
+        export CX_ASYNC &&
+
+        # Map branch values to expected branch names in CxOne (limited set)
+        case "$DRONE_TARGET_BRANCH" in 
+          main|trunk|master)
+            CX_BRANCH="PRODUCTION"
+            ;;
+          develop)
+            CX_BRANCH="LATEST"
+            ;;
+          release*)
+            CX_BRANCH="STAGE"
+            ;;
+          sast)
+            CX_BRANCH="SAST"
+            ;;
+          *)
+            CX_BRANCH="TEMP"
+            ;;
+        esac
+        export CI_BRANCH=$CX_BRANCH &&
+
+        # Build the CxOne scan command from previous configured values
+        SCAN_COMMAND="$BIN_PATH/cx scan create \
+        --project-name $CX_PROJECT \
+        -s $CX_FILE_SOURCE \
+        --agent $CX_AGENT \
+        --base-uri $CX_BASE_URI \
+        --base-auth-uri $CX_AUTH_URI \
+        --tenant $CX_TENANT \
+        --client-id $CX_CLIENT_ID \
+        --client-secret $CX_CLIENT_SECRET \
+        --branch $CX_BRANCH $CLI_PARAMS \
+        --scan-types $CX_SCAN_TYPES \
+        --scan-info-format $CX_SCAN_FORMAT \
+        --sca-exploitable-path $CX_EXPLOITABLE_PATH \
+        --project-tags \"$CX_PROJECT_TAGS\" \
+        --sca-resolver $CX_SCA_RESOLVER $RESOLVER_PARAMS \
+        --file-filter $CX_FILE_FILTER \
+        --sast-filter $CX_SAST_FILTER \
+        --output-name $CX_OUTPUT_NAME \
+        --filter \"state=exclude_not_exploitable\" \
+        --tags \"$TAGS\" $ASYNC_PARAMS" &&
+        echo "Executing command: $SCAN_COMMAND" &&
+
+        # Prevent exit code errors from failing the script
+        set +e
+        # Run the scan command, redirect both stdout and stderr to a log file
+        #if [[ "$SCAN_COMMAND" == *"--async"* ]]; then
+        #  eval $SCAN_COMMAND > scan_output.log 2>&1 &
+        #  disown
+        #else 
+        #  eval $SCAN_COMMAND > scan_output.log 2>&1
+        #fi
+        eval $SCAN_COMMAND > scan_output.log 2>&1
+        EXIT_CODE=$?
+        # Ignore non-zero exit codes, log the result for reference
+        if [ "$EXIT_CODE -ne 0" ]; then
+          echo "Scan completed with a non-zero exit code: $EXIT_CODE. Proceeding anyway."
+        fi
+        # Enable exit codes
+        # set -e
+        # Display the results
+        cat scan_output.log
+
+        # Enable script debugging to see command execution
+        # set -x
+
+        # Set default values
+        export TUAppSec_Global="pass"
+        export TUAppSec_Platinum="pass"
+        export TUAppSec_Gold="pass"
+        export TUAppSec_Silver="pass"
+        export SCAN_URL="https://ast.checkmarx.net"
+        # Parse the results for policy violations line by line
+        while IFS= read -r line; do
+
+          # echo "Processing line: $line"
+          # Match the line with policy violations
+          if [[ $line =~ ^[[:space:]]*Policy:\ (.+)\ \|\ Break\ Build:\ (true|false)\ \|\ Violated\ Rules:\ (.*) ]]; then
+
+            # Capture the Policy Name
+            POLICY_NAME_RAW=${BASH_REMATCH[1]}
+            # VIOLATED_RULES_RAW=${BASE_REMATCH[3]}
+
+            # Sanitize the policy name to be a valid environment variable name, change dashes to underscores, and remove trailing underscore
+            POLICY_NAME1=$(echo "$POLICY_NAME_RAW" | tr -c '[:alnum:]_' '_' | sed 's/_$//')
+            # Remove whitespace
+            POLICY_NAME=$(echo "$POLICY_NAME1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+            # Sanitize the Violated Rules and remove the semicolons
+            # VIOLATED_RULES1=(echo "$VIOLATED_RULES_RAW" | sed 's/;//g')
+            # Remove whitespace
+            # VIOLATED_RULES=(echo "$VIOLATED_RULES1" | sed 's/^[[:space]]*//;s/[[:space:]]*$//')
+
+            # Debugging: Print the matched components
+            # echo "Original Policy Name: $POLICY_NAME_RAW"
+            # echo "Sanitized Policy Name: $POLICY_NAME"
+            # echo "Original Violated Rules: $VIOLATED_RULES_RAW"
+            # echo "Violated Rules: $VIOLATED_RULES"
+
+            # Determine if there are any violated rules
+            if [[ -n $POLICY_NAME ]]; then
+              echo "Policy $POLICY_NAME has violated rules. Setting status to 'fail'."
+              export "${POLICY_NAME}=fail"
+            else
+              echo "Policy $POLICY_NAME has no violated rules. Setting status to 'pass'."
+              export "${POLICY_NAME}=pass"
+            fi
+          fi
+
+          # Find the SCAN ID URL
+          if [[ $line =~ ^[[:space:]]*Checkmarx\ One\ -\ Scan\ Summary\ \&\ Details:\ (https?://[a-zA-Z0-9./?=&_%:#-]+) ]]; then
+            # echo "Full Match: ${BASH_REMATCH[0]}"
+            echo "Captured URL: ${BASH_REMATCH[1]}"
+            SCAN_URL=${BASH_REMATCH[1]}
+            export SCAN_URL="$SCAN_URL"
+          fi
+        done < "scan_output.log"
+
+        # Verify the exported variables found
+        # echo "Additional exported variables:"
+        # export -p | grep 'TUAppSec'
+        # export -p | grep 'SCAN'
+
+        # Disable script debugging
+        #set +x
+        # Remove to prevent wiz cli from scanning cx binaries
+        # rm $BIN_PATH/cx
+        # rm $BIN_PATH/ScaResolver
+      envVariables:
+        CX_BASE_URI: https://ast.checkmarx.net/
+      outputVariables:
+        - name: CX_ASYNC
+          type: String
+          value: CX_ASYNC
+        - name: CX_REPORT
+          type: String
+          value: CX_REPORT
+    description: Updated CxOne with version
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: MarkAsFailure
+  versionLabel: "1.2"
