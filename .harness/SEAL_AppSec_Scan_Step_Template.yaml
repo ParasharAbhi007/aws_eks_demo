@@ -305,6 +305,9 @@ template:
         - name: test
           type: String
           value: <+input>
+        - name: test2
+          type: String
+          value: test
     description: Updated CxOne with version
     failureStrategies:
       - onFailure:
