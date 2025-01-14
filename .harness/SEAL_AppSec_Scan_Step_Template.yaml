@@ -302,6 +302,9 @@ template:
         - name: CX_REPORT
           type: String
           value: CX_REPORT
+        - name: test
+          type: String
+          value: <+input>
     description: Updated CxOne with version
     failureStrategies:
       - onFailure:
