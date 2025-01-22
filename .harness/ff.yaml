@@ -1,0 +1,219 @@
+featureFlags:
+  flags:
+  - flag:
+      name: js
+      identifier: js
+      description: ""
+      permanent: false
+      spec:
+        type: boolean
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        variations:
+        - identifier: "true"
+          value: "true"
+        - identifier: "false"
+          value: "false"
+      environments:
+      - identifier: helmenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8Env
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "on"
+      - identifier: K8bgEnv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: cdvd
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: jnj
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: canaryenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjj
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: innovationnonprod
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: terraformdev
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: remoteenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test12
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test123
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: testjs
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: ECS_INFRA
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+        targetRules:
+        - targets:
+          - identifier: test
+          variation: "true"
+      - identifier: ssh
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+        rules:
+        - priority: 0
+          serve:
+            serveVariation: "true"
+          clauses:
+          - attribute: ""
+            op: segmentMatch
+            values:
+            - ers
+      - identifier: jjjnew
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+  - flag:
+      name: js sdk
+      identifier: js_sdk
+      description: ""
+      permanent: false
+      spec:
+        type: boolean
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        variations:
+        - identifier: "true"
+          value: "true"
+        - identifier: "false"
+          value: "false"
+      environments:
+      - identifier: helmenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8Env
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8bgEnv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: cdvd
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: jnj
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: canaryenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjj
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: innovationnonprod
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: terraformdev
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: remoteenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test12
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test123
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "on"
+      - identifier: testjs
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: ECS_INFRA
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: ssh
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjjnew
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
