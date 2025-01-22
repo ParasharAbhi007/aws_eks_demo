@@ -70,7 +70,7 @@ featureFlags:
         default:
           onVariation: "true"
           offVariation: "false"
-        state: "off"
+        state: "on"
       - identifier: test12
         default:
           onVariation: "true"
