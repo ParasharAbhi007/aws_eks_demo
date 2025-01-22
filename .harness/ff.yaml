@@ -113,7 +113,7 @@ featureFlags:
         default:
           onVariation: "true"
           offVariation: "false"
-        state: "off"
+        state: "on"
   - flag:
       name: js sdk
       identifier: js_sdk
