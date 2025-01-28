@@ -71,6 +71,10 @@ featureFlags:
           onVariation: "true"
           offVariation: "false"
         state: "on"
+        targetRules:
+        - targets:
+          - identifier: mj
+          variation: "true"
       - identifier: test12
         default:
           onVariation: "true"
