@@ -27,6 +27,20 @@ template:
                       stageListener: <+input>
                       stageListenerRuleArn: <+input>
                     timeout: 10m
+          - step:
+              type: ShellScript
+              name: ShellScript_1
+              identifier: ShellScript_1
+              spec:
+                shell: Bash
+                executionTarget: {}
+                source:
+                  type: Inline
+                  spec:
+                    script: echo "hey"
+                environmentVariables: []
+                outputVariables: []
+              timeout: 10m
         rollbackSteps: []
       environments:
         metadata:
