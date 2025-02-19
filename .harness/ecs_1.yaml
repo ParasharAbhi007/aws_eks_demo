@@ -1,0 +1,42 @@
+template:
+  name: ecs
+  type: Stage
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  spec:
+    type: Deployment
+    spec:
+      deploymentType: ECS
+      service:
+        serviceRef: <+input>
+        serviceInputs: <+input>
+      execution:
+        steps:
+          - stepGroup:
+              name: newvc
+              identifier: newvc
+              steps:
+                - step:
+                    type: EcsBlueGreenCreateService
+                    name: EcsBlueGreenCreateService_1
+                    identifier: EcsBlueGreenCreateService_1
+                    spec:
+                      loadBalancer: <+input>
+                      prodListener: <+input>
+                      prodListenerRuleArn: <+input>
+                      stageListener: <+input>
+                      stageListenerRuleArn: <+input>
+                    timeout: 10m
+        rollbackSteps: []
+      environments:
+        metadata:
+          parallel: false
+        values: <+input>
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: MarkAsFailure
+  identifier: ecs
+  versionLabel: "1"
