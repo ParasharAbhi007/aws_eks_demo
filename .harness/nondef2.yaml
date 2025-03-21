@@ -6,25 +6,152 @@ pipeline:
   tags: {}
   stages:
     - stage:
-        name: cccc
-        identifier: ccc
+        name: Deploy Glue Jobs RMDW CGX
+        identifier: Dev_Deployments
         description: ""
-        type: Custom
+        type: Deployment
         spec:
+          deploymentType: Ssh
+          service:
+            serviceRef: AWS_CLI_validation
+          environment:
+            environmentRef: Qa
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: qa_aws_connect
           execution:
             steps:
               - step:
                   type: ShellScript
-                  name: ShellScript_1
-                  identifier: ShellScript_1
+                  name: Export Import Glue Job
+                  identifier: Disabling_this_step_for_now
                   spec:
                     shell: Bash
-                    executionTarget: {}
                     source:
                       type: Inline
                       spec:
-                        script: vv
+                        script: |+
+                          #!/bin/bash
+                          set -o errexit
+                          if [ -d "/Infra-CGX" ]; then
+                             rm -rf /Infra-CGX
+                          fi
+                          git clone --depth 1 --branch <+stage.variables.gh_branch> https://<+stage.variables.gh_username>:<+stage.variables.gh_token>@github.ual.com/<+stage.variables.gh_repo>.git /Infra-CGX
+                          cd /Infra-CGX
+                          pwd
+                          # Assume role 
+                          assume_role_arn="arn:aws:iam::<+stage.variables.account_id>:role/HarnessCDDelegateRole"
+                          echo $assume_role_arn
+                          temp_role=$(aws sts assume-role --role-arn "$assume_role_arn" --role-session-name "AWSCLI-Session")
+                          export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r .Credentials.AccessKeyId)
+                          export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)
+                          export AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)
+                          export AWS_REGION=<+stage.variables.region>
+                          export HTTP_PROXY=http://gateway2ndc.ual.com:80
+                          export HTTPS_PROXY=http://gateway2ndc.ual.com:80
+
+                          # Configure AWS CLI profile "saml" with temporary role credentials
+                          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile saml
+                          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile saml
+                          aws configure set aws_session_token $AWS_SESSION_TOKEN --profile saml
+                          aws configure set region $AWS_REGION --profile saml
+                          aws configure set output json --profile saml
+
+                          # Verify the configuration by checking the caller identity
+                          aws sts get-caller-identity --profile saml
+
+                          # aws cloudformation
+                          for TmpGlueSuffix in $(echo <+stage.variables.GlueSuffix> | sed "s/,/ /g")
+                          do
+                          aws --force-upload --profile saml cloudformation deploy \
+                          --template-file <+stage.variables.template_file> \
+                          --stack-name harness-<+stage.variables.app_ci>-<+stage.variables.app_env>-<+stage.variables.GlueJobName>-$TmpGlueSuffix-deploy \
+                          --parameter-overrides GlueJobName="<+stage.variables.GlueJobName>" GlueBucketName="<+stage.variables.GlueBucketName>" GlueSuffix="$TmpGlueSuffix" \
+                          --tags ApplicationCI="<+stage.variables.app_ci>"
+                          done
+
+                          # for GlueJobName in $(echo <+stage.variables.GlueJobNames> | sed "s/,/ /g")
+                          # do
+                          # aws --force-upload --profile saml cloudformation deploy \
+                          # --template-file <+stage.variables.template_file> \
+                          # --stack-name harness-<+stage.variables.app_ci>-<+stage.variables.app_env>-$GlueJobName-deploy  \
+                          # --parameter-overrides GlueJobName="$GlueJobName" GlueBucketName="<+stage.variables.GlueBucketName>" \
+                          # --tags ApplicationCI="<+stage.variables.app_ci>"
+                          # done
+                          rm -rf /Infra-CGX
+
                     environmentVariables: []
                     outputVariables: []
+                    executionTarget: {}
                   timeout: 10m
+            rollbackSteps: []
         tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+        variables:
+          - name: GlueSuffix
+            type: String
+            description: Choose Import or Export the Job will create with that name.
+            required: true
+            value: <+input>.allowedValues(import,export)
+          - name: app_ci
+            type: String
+            description: App CI cgx name
+            required: false
+            value: cgx
+          - name: app_env
+            type: String
+            description: Environment details
+            required: false
+            value: qa
+          - name: GlueJobName
+            type: String
+            description: spark name
+            required: false
+            value: spark
+          - name: template_file
+            type: String
+            description: Template file
+            required: false
+            value: Services/rmdw-gluejob-pyspark.yaml
+          - name: GlueBucketName
+            type: String
+            description: "Bucket name "
+            required: false
+            value: <+stage.variables.app_ci>-rmdw-<+stage.variables.app_env>
+          - name: region
+            type: String
+            description: Region Secondary us-east-1 and Primary us-east-2
+            required: false
+            value: <+input>.allowedValues(us-east-1,us-east-2)
+          - name: gh_repo
+            type: String
+            description: Repo Name
+            required: false
+            value: OET-DevOps-Team/Infra-CGX
+          - name: gh_branch
+            type: String
+            description: ""
+            required: false
+            value: cgx-harness
+          - name: gh_token
+            type: Secret
+            description: ""
+            required: false
+            value: account.svcoetdevopspassword
+          - name: gh_username
+            type: Secret
+            description: ""
+            required: false
+            value: account.svcOetDevops
+          - name: account_id
+            type: String
+            description: ""
+            required: false
+            value: "459629961448"
+  delegateSelectors:
+    - network-revenuemgmt-nonprod-cd-ng
