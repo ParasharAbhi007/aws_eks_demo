@@ -84,6 +84,22 @@ pipeline:
                     outputVariables: []
                     executionTarget: {}
                   timeout: 10m
+              - step:
+                  type: Command
+                  name: Command_1
+                  identifier: Command_1
+                  spec:
+                    onDelegate: false
+                    environmentVariables: []
+                    outputVariables: []
+                    commandUnits:
+                      - identifier: f
+                        name: f
+                        type: Copy
+                        spec:
+                          sourceType: Artifact
+                          destinationPath: d
+                  timeout: 10m
             rollbackSteps: []
         tags: {}
         failureStrategies:
