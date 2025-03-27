@@ -23,7 +23,21 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: vv
+                        script: |-
+                          curl -i -X POST \
+                            'https://app.harness.io/ccm/api/governance/enqueueAdhocV2?accountIdentifier=akx2lmy5SnOFm549xPhFKQ' \
+                            -H 'Content-Type: application/json' \
+                            -H 'x-api-key: pat.akx2lmy5SnOFm549xPhFKQ.67dce6ef6b95c23f61fc86d6.myVN6vO04RkumbbpeRS8' \
+                            -d '{
+                              "targetAccounts": [
+                                "915632791698"
+                              ],
+                              "targetRegions": [
+                                "us-east-1"
+                              ],
+                              "ruleId": "65d5b67bf9649b3e833aa4c7",
+                              "isDryRun": true
+                            }'
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
