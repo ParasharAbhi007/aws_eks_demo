@@ -11,7 +11,7 @@ inputSet:
           type: Deployment
           spec:
             service:
-              serviceRef: k8service
+              serviceRef: k8servic
     variables:
       - name: fdss
         type: String
