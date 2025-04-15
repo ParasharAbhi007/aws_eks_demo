@@ -5,7 +5,7 @@ Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: testcf_abhi_amit
+      BucketName: testcfabhieeee
       VersioningConfiguration:
         Status: Suspended
 
