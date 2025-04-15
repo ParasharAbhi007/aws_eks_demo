@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create an S3 bucket with optional versioning
+
+Parameters:
+  BucketName:
+    Description: testcf
+    Type: String
+
+  EnableVersioning:
+    Description: Enable versioning on the bucket?
+    Type: String
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      VersioningConfiguration:
+        Status: !If
+          - EnableVersioningCondition
+          - Enabled
+          - Suspended
+
+Conditions:
+  EnableVersioningCondition: !Equals [ !Ref EnableVersioning, "true" ]
+
+Outputs:
+  BucketNameOutput:
+    Description: Name of the created S3 bucket
+    Value: !Ref MyS3Bucket
+
+  BucketArn:
+    Description: ARN of the created S3 bucket
+    Value: !GetAtt MyS3Bucket.Arn
