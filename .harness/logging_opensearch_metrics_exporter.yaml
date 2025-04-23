@@ -1,0 +1,1189 @@
+pipeline:
+  name: logging_opensearch_metrics_exporter
+  identifier: logging_opensearch_metrics_exporter
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  tags: {}
+  stages:
+    - stage:
+        name: DMON TF
+        identifier: dmon_tf
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: TerragruntPlan
+                  name: Plan
+                  identifier: plan
+                  spec:
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          type: Bitbucket
+                          spec:
+                            gitFetchType: Commit
+                            connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                            repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                            commitId: <+pipeline.variables.gitTag>
+                            folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                        moduleSource:
+                          useConnectorCredentials: true
+                      moduleConfig:
+                        terragruntRunType: RunAll
+                        path: .
+                      secretManagerRef: account.secretsmanager_<+stage.variables.accountName>
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+              - step:
+                  type: HarnessApproval
+                  name: Approval
+                  identifier: Approval
+                  spec:
+                    approvalMessage: Please review the Plan step.
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - <+pipeline.variables.approvalUserGroup>
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: <+pipeline.variables.approvalTimeout>
+              - step:
+                  type: TerragruntApply
+                  name: Apply
+                  identifier: Apply
+                  spec:
+                    configuration:
+                      type: Inline
+                      spec:
+                        configFiles:
+                          store:
+                            type: Bitbucket
+                            spec:
+                              gitFetchType: Commit
+                              connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                              repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                              commitId: <+pipeline.variables.gitTag>
+                              folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                          moduleSource:
+                            useConnectorCredentials: true
+                        moduleConfig:
+                          terragruntRunType: RunAll
+                          path: .
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+        variables:
+          - name: accountName
+            type: String
+            value: dmon
+    - stage:
+        name: DMON Helm
+        identifier: dmon_helm
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: logging_opensearch_metrics_exporter_helm_service
+          environment:
+            environmentRef: account.eks_dmon
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helm_eu_west_1_dmon
+                inputs:
+                  identifier: helm_eu_west_1_dmon
+                  type: KubernetesAws
+                  spec:
+                    releaseName: opensearch-metrics-exporter
+          execution:
+            steps:
+              - step:
+                  name: change_marker_request
+                  identifier: change_marker_request
+                  template:
+                    templateRef: account.change_marker_request
+                    versionLabel: "2"
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: targetEnvironment
+                            type: String
+                            value: DMON
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+                          - name: service
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                  when:
+                    stageStatus: Success
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: HelmDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+              - step:
+                  name: JetDeployEvent
+                  identifier: jetDeployEvent
+                  template:
+                    templateRef: account.eks_jet_deploy_event
+                    versionLabel: "1"
+                    gitBranch: master
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: branch
+                            type: String
+                            value: <+pipeline.variables.branch>
+                          - name: repoName
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                          - name: jetId
+                            type: String
+                            value: <+pipeline.variables.jetId>
+                          - name: sealId
+                            type: String
+                            value: <+pipeline.variables.sealId>
+                          - name: jetProjectName
+                            type: String
+                            value: <+pipeline.variables.jetProjectName>
+                          - name: artifactLocation
+                            type: String
+                            value: <+pipeline.variables.artifactLocation>
+                          - name: cluster
+                            type: String
+                            value: dmon
+                          - name: targetEnvironment
+                            type: String
+                            value: DMON
+                          - name: endpoint
+                            type: String
+                            value: <+pipeline.executionUrl>
+                          - name: namespace
+                            type: String
+                            value: logging
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: bitbucketProjectKey
+                            type: String
+                            value: <+pipeline.variables.bitbucketProjectKey>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: HelmRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        variables:
+          - name: clusterName
+            type: String
+            value: dmon
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+    - stage:
+        name: IMON TF
+        identifier: imon_tf
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: TerragruntPlan
+                  name: Plan
+                  identifier: plan
+                  spec:
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          type: Bitbucket
+                          spec:
+                            gitFetchType: Commit
+                            connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                            repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                            commitId: <+pipeline.variables.gitTag>
+                            folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                        moduleSource:
+                          useConnectorCredentials: true
+                      moduleConfig:
+                        terragruntRunType: RunAll
+                        path: .
+                      secretManagerRef: account.secretsmanager_<+stage.variables.accountName>
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+              - step:
+                  type: HarnessApproval
+                  name: Approval
+                  identifier: Approval
+                  spec:
+                    approvalMessage: Please review the Plan step.
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - <+pipeline.variables.approvalUserGroup>
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: <+pipeline.variables.approvalTimeout>
+              - step:
+                  type: TerragruntApply
+                  name: Apply
+                  identifier: Apply
+                  spec:
+                    configuration:
+                      type: Inline
+                      spec:
+                        configFiles:
+                          store:
+                            type: Bitbucket
+                            spec:
+                              gitFetchType: Commit
+                              connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                              repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                              commitId: <+pipeline.variables.gitTag>
+                              folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                          moduleSource:
+                            useConnectorCredentials: true
+                        moduleConfig:
+                          terragruntRunType: RunAll
+                          path: .
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+        variables:
+          - name: accountName
+            type: String
+            value: imon
+    - stage:
+        name: IMON Helm
+        identifier: imon_helm
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: logging_opensearch_metrics_exporter_helm_service
+          environment:
+            environmentRef: account.eks_imon
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helm_eu_west_1_imon
+                inputs:
+                  identifier: helm_eu_west_1_imon
+                  type: KubernetesAws
+                  spec:
+                    releaseName: opensearch-metrics-exporter
+          execution:
+            steps:
+              - step:
+                  name: change_marker_request
+                  identifier: change_marker_request
+                  template:
+                    templateRef: account.change_marker_request
+                    versionLabel: "2"
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: targetEnvironment
+                            type: String
+                            value: IMON
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+                          - name: service
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                  when:
+                    stageStatus: Success
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: HelmDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+              - step:
+                  name: JetDeployEvent
+                  identifier: jetDeployEvent
+                  template:
+                    templateRef: account.eks_jet_deploy_event
+                    versionLabel: "1"
+                    gitBranch: master
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: branch
+                            type: String
+                            value: <+pipeline.variables.branch>
+                          - name: repoName
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                          - name: jetId
+                            type: String
+                            value: <+pipeline.variables.jetId>
+                          - name: sealId
+                            type: String
+                            value: <+pipeline.variables.sealId>
+                          - name: jetProjectName
+                            type: String
+                            value: <+pipeline.variables.jetProjectName>
+                          - name: artifactLocation
+                            type: String
+                            value: <+pipeline.variables.artifactLocation>
+                          - name: cluster
+                            type: String
+                            value: imon
+                          - name: targetEnvironment
+                            type: String
+                            value: IMON
+                          - name: endpoint
+                            type: String
+                            value: <+pipeline.executionUrl>
+                          - name: namespace
+                            type: String
+                            value: logging
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: bitbucketProjectKey
+                            type: String
+                            value: <+pipeline.variables.bitbucketProjectKey>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: HelmRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        variables:
+          - name: clusterName
+            type: String
+            value: imon
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+    - stage:
+        name: Promote to UAT clusters
+        identifier: Promote_to_uat
+        description: Do you want to deploy this chart in all UAT clusters?
+        type: Approval
+        spec:
+          execution:
+            steps:
+              - step:
+                  name: Promote to UAT clusters
+                  identifier: Promote_to_uat
+                  type: HarnessApproval
+                  timeout: 1d
+                  spec:
+                    approvalMessage: Please review the following information and approve the pipeline progression
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                      userGroups:
+                        - account.CoreEngEngineer
+        tags: {}
+        when:
+          pipelineStatus: Success
+    - stage:
+        name: EMON TF
+        identifier: emon_tf
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: TerragruntPlan
+                  name: Plan
+                  identifier: plan
+                  spec:
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          type: Bitbucket
+                          spec:
+                            gitFetchType: Commit
+                            connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                            repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                            commitId: <+pipeline.variables.gitTag>
+                            folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                        moduleSource:
+                          useConnectorCredentials: true
+                      moduleConfig:
+                        terragruntRunType: RunAll
+                        path: .
+                      secretManagerRef: account.secretsmanager_<+stage.variables.accountName>
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+              - step:
+                  type: HarnessApproval
+                  name: Approval
+                  identifier: Approval
+                  spec:
+                    approvalMessage: Please review the Plan step.
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - <+pipeline.variables.approvalUserGroup>
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: <+pipeline.variables.approvalTimeout>
+              - step:
+                  type: TerragruntApply
+                  name: Apply
+                  identifier: Apply
+                  spec:
+                    configuration:
+                      type: Inline
+                      spec:
+                        configFiles:
+                          store:
+                            type: Bitbucket
+                            spec:
+                              gitFetchType: Commit
+                              connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                              repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                              commitId: <+pipeline.variables.gitTag>
+                              folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                          moduleSource:
+                            useConnectorCredentials: true
+                        moduleConfig:
+                          terragruntRunType: RunAll
+                          path: .
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+        variables:
+          - name: accountName
+            type: String
+            value: emon
+    - stage:
+        name: EMON Helm
+        identifier: emon_helm
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: logging_opensearch_metrics_exporter_helm_service
+          environment:
+            environmentRef: account.eks_emon
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helm_eu_west_1_emon
+                inputs:
+                  identifier: helm_eu_west_1_emon
+                  type: KubernetesAws
+                  spec:
+                    releaseName: opensearch-metrics-exporter
+          execution:
+            steps:
+              - step:
+                  name: change_marker_request
+                  identifier: change_marker_request
+                  template:
+                    templateRef: account.change_marker_request
+                    versionLabel: "2"
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: targetEnvironment
+                            type: String
+                            value: EMON
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+                          - name: service
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                  when:
+                    stageStatus: Success
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: HelmDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+              - step:
+                  name: JetDeployEvent
+                  identifier: jetDeployEvent
+                  template:
+                    templateRef: account.eks_jet_deploy_event
+                    versionLabel: "1"
+                    gitBranch: master
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: branch
+                            type: String
+                            value: <+pipeline.variables.branch>
+                          - name: repoName
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                          - name: jetId
+                            type: String
+                            value: <+pipeline.variables.jetId>
+                          - name: sealId
+                            type: String
+                            value: <+pipeline.variables.sealId>
+                          - name: jetProjectName
+                            type: String
+                            value: <+pipeline.variables.jetProjectName>
+                          - name: artifactLocation
+                            type: String
+                            value: <+pipeline.variables.artifactLocation>
+                          - name: cluster
+                            type: String
+                            value: emon
+                          - name: targetEnvironment
+                            type: String
+                            value: EMON
+                          - name: endpoint
+                            type: String
+                            value: <+pipeline.executionUrl>
+                          - name: namespace
+                            type: String
+                            value: logging
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: bitbucketProjectKey
+                            type: String
+                            value: <+pipeline.variables.bitbucketProjectKey>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: HelmRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        variables:
+          - name: clusterName
+            type: String
+            value: emon
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+    - stage:
+        name: NMON TF
+        identifier: nmon_tf
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: TerragruntPlan
+                  name: Plan
+                  identifier: plan
+                  spec:
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          type: Bitbucket
+                          spec:
+                            gitFetchType: Commit
+                            connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                            repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                            commitId: <+pipeline.variables.gitTag>
+                            folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                        moduleSource:
+                          useConnectorCredentials: true
+                      moduleConfig:
+                        terragruntRunType: RunAll
+                        path: .
+                      secretManagerRef: account.secretsmanager_<+stage.variables.accountName>
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+              - step:
+                  type: HarnessApproval
+                  name: Approval
+                  identifier: Approval
+                  spec:
+                    approvalMessage: Please review the Plan step.
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - <+pipeline.variables.approvalUserGroup>
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: <+pipeline.variables.approvalTimeout>
+              - step:
+                  type: TerragruntApply
+                  name: Apply
+                  identifier: Apply
+                  spec:
+                    configuration:
+                      type: Inline
+                      spec:
+                        configFiles:
+                          store:
+                            type: Bitbucket
+                            spec:
+                              gitFetchType: Commit
+                              connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                              repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                              commitId: <+pipeline.variables.gitTag>
+                              folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                          moduleSource:
+                            useConnectorCredentials: true
+                        moduleConfig:
+                          terragruntRunType: RunAll
+                          path: .
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+        variables:
+          - name: accountName
+            type: String
+            value: nmon
+        when:
+          pipelineStatus: Success
+          condition: <+pipeline.variables.branch>=="master"
+    - stage:
+        name: NMON Helm
+        identifier: nmon_helm
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: logging_opensearch_metrics_exporter_helm_service
+          environment:
+            environmentRef: account.eks_nmon
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helm_eu_west_1_nmon
+                inputs:
+                  identifier: helm_eu_west_1_nmon
+                  type: KubernetesAws
+                  spec:
+                    releaseName: opensearch-metrics-exporter
+          execution:
+            steps:
+              - step:
+                  name: change_marker_request
+                  identifier: change_marker_request
+                  template:
+                    templateRef: account.change_marker_request
+                    versionLabel: "2"
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: targetEnvironment
+                            type: String
+                            value: NMON
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+                          - name: service
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                  when:
+                    stageStatus: Success
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: HelmDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+              - step:
+                  name: JetDeployEvent
+                  identifier: jetDeployEvent
+                  template:
+                    templateRef: account.eks_jet_deploy_event
+                    versionLabel: "1"
+                    gitBranch: master
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: branch
+                            type: String
+                            value: <+pipeline.variables.branch>
+                          - name: repoName
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                          - name: jetId
+                            type: String
+                            value: <+pipeline.variables.jetId>
+                          - name: sealId
+                            type: String
+                            value: <+pipeline.variables.sealId>
+                          - name: jetProjectName
+                            type: String
+                            value: <+pipeline.variables.jetProjectName>
+                          - name: artifactLocation
+                            type: String
+                            value: <+pipeline.variables.artifactLocation>
+                          - name: cluster
+                            type: String
+                            value: nmon
+                          - name: targetEnvironment
+                            type: String
+                            value: NMON
+                          - name: endpoint
+                            type: String
+                            value: <+pipeline.executionUrl>
+                          - name: namespace
+                            type: String
+                            value: logging
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: bitbucketProjectKey
+                            type: String
+                            value: <+pipeline.variables.bitbucketProjectKey>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: HelmRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        variables:
+          - name: clusterName
+            type: String
+            value: nmon
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+        when:
+          pipelineStatus: Success
+          condition: <+pipeline.variables.branch>=="master"
+    - stage:
+        name: Promote to PROD clusters
+        identifier: Promote_to_prod
+        description: Do you want to deploy this chart in all PROD clusters? Your SNOW ticket must be in Implement state to proceed further
+        type: Approval
+        spec:
+          execution:
+            steps:
+              - step:
+                  name: Promote to PROD clusters
+                  identifier: Promote_to_prod
+                  type: HarnessApproval
+                  timeout: 1d
+                  spec:
+                    approvalMessage: Do you want to deploy this chart in all PROD clusters? Your SNOW ticket must be in Implement state to proceed further
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                      userGroups:
+                        - account.CoreEngEngineer
+        tags: {}
+        when:
+          pipelineStatus: Success
+          condition: <+pipeline.variables.branch>=="master"
+    - stage:
+        name: PMON TF
+        identifier: pmon_tf
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - stepGroup:
+                  name: Snow_Tollgate_Pcore
+                  identifier: Snow_Tollgate_Pcore
+                  template:
+                    templateRef: account.snow_tollgate_custom
+                    versionLabel: "2.0"
+                    templateInputs:
+                      steps:
+                        - step:
+                            identifier: Call_Snow
+                            type: Http
+                            spec:
+                              inputVariables:
+                                - name: repoName
+                                  type: String
+                                  value: <+pipeline.variables.repoName>
+                                - name: bitbucketProjectKey
+                                  type: String
+                                  value: <+pipeline.variables.bitbucketProjectKey>
+                                - name: chartVersion
+                                  type: String
+                                  value: <+pipeline.variables.versionTag>
+                                - name: changeRequest
+                                  type: String
+                                  value: <+pipeline.variables.changeRequest>
+                                - name: jetProjectName
+                                  type: String
+                                  value: <+pipeline.variables.jetProjectName>
+                                - name: jetId
+                                  type: String
+                                  value: <+pipeline.variables.jetId>
+                                - name: stageType
+                                  type: String
+                                  value: TERRAGRUNT_DEPLOY
+              - step:
+                  type: TerragruntPlan
+                  name: Plan
+                  identifier: plan
+                  spec:
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          type: Bitbucket
+                          spec:
+                            gitFetchType: Commit
+                            connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                            repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                            commitId: <+pipeline.variables.gitTag>
+                            folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                        moduleSource:
+                          useConnectorCredentials: true
+                      moduleConfig:
+                        terragruntRunType: RunAll
+                        path: .
+                      secretManagerRef: account.secretsmanager_<+stage.variables.accountName>
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+              - step:
+                  type: HarnessApproval
+                  name: Approval
+                  identifier: Approval
+                  spec:
+                    approvalMessage: Please review the Plan step.
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - <+pipeline.variables.approvalUserGroup>
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: <+pipeline.variables.approvalTimeout>
+              - step:
+                  type: TerragruntApply
+                  name: Apply
+                  identifier: Apply
+                  spec:
+                    configuration:
+                      type: Inline
+                      spec:
+                        configFiles:
+                          store:
+                            type: Bitbucket
+                            spec:
+                              gitFetchType: Commit
+                              connectorRef: account.bitbucket_https_<+stage.variables.accountName>
+                              repoName: <+pipeline.variables.bitbucketProjectKey>/<+pipeline.variables.repoName>
+                              commitId: <+pipeline.variables.gitTag>
+                              folderPath: <+pipeline.variables.envsRootPath>/<+stage.variables.accountName>
+                          moduleSource:
+                            useConnectorCredentials: true
+                        moduleConfig:
+                          terragruntRunType: RunAll
+                          path: .
+                    provisionerIdentifier: <+pipeline.identifier>_<+pipeline.sequenceId>_<+stage.variables.accountName>_plan
+                    delegateSelectors:
+                      - accountName=<+stage.variables.accountName>
+                  timeout: 1h
+        variables:
+          - name: accountName
+            type: String
+            value: pmon
+        when:
+          pipelineStatus: Success
+          condition: <+pipeline.variables.branch>=="master" && <+pipeline.variables.changeRequest>!=""
+    - stage:
+        name: PMON Helm
+        identifier: pmon_helm
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: logging_opensearch_metrics_exporter_helm_service
+          environment:
+            environmentRef: account.eks_pmon
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helm_eu_west_1_pmon
+                inputs:
+                  identifier: helm_eu_west_1_pmon
+                  type: KubernetesAws
+                  spec:
+                    releaseName: opensearch-metrics-exporter
+          execution:
+            steps:
+              - stepGroup:
+                  name: Snow_Tollgate
+                  identifier: Snow_Tollgate
+                  template:
+                    templateRef: account.snow_tollgate_custom
+                    versionLabel: "2.0"
+                    templateInputs:
+                      steps:
+                        - step:
+                            identifier: Call_Snow
+                            type: Http
+                            spec:
+                              inputVariables:
+                                - name: repoName
+                                  type: String
+                                  value: <+pipeline.variables.repoName>
+                                - name: bitbucketProjectKey
+                                  type: String
+                                  value: <+pipeline.variables.bitbucketProjectKey>
+                                - name: gitTag
+                                  type: String
+                                  value: <+pipeline.variables.gitTag>
+                                - name: changeRequest
+                                  type: String
+                                  value: <+pipeline.variables.changeRequest>
+                                - name: jetProjectName
+                                  type: String
+                                  value: <+pipeline.variables.jetProjectName>
+                                - name: jetId
+                                  type: String
+                                  value: <+pipeline.variables.jetId>
+                                - name: stageType
+                                  type: String
+                                  value: EKS_DEPLOY
+              - step:
+                  name: change_marker_request
+                  identifier: change_marker_request
+                  template:
+                    templateRef: account.change_marker_request
+                    versionLabel: "2"
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: targetEnvironment
+                            type: String
+                            value: PMON
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+                          - name: service
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                  when:
+                    stageStatus: Success
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: HelmDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+              - step:
+                  name: JetDeployEvent
+                  identifier: jetDeployEvent
+                  template:
+                    templateRef: account.eks_jet_deploy_event
+                    versionLabel: "1"
+                    gitBranch: master
+                    templateInputs:
+                      type: Http
+                      spec:
+                        inputVariables:
+                          - name: branch
+                            type: String
+                            value: <+pipeline.variables.branch>
+                          - name: repoName
+                            type: String
+                            value: <+pipeline.variables.repoName>
+                          - name: jetId
+                            type: String
+                            value: <+pipeline.variables.jetId>
+                          - name: sealId
+                            type: String
+                            value: <+pipeline.variables.sealId>
+                          - name: jetProjectName
+                            type: String
+                            value: <+pipeline.variables.jetProjectName>
+                          - name: artifactLocation
+                            type: String
+                            value: <+pipeline.variables.artifactLocation>
+                          - name: cluster
+                            type: String
+                            value: pmon
+                          - name: targetEnvironment
+                            type: String
+                            value: PMON
+                          - name: endpoint
+                            type: String
+                            value: <+pipeline.executionUrl>
+                          - name: namespace
+                            type: String
+                            value: logging
+                          - name: changeCtrlTicket
+                            type: String
+                            value: <+pipeline.variables.changeRequest>
+                          - name: bitbucketProjectKey
+                            type: String
+                            value: <+pipeline.variables.bitbucketProjectKey>
+                          - name: versionTag
+                            type: String
+                            value: <+pipeline.variables.gitTag>
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: HelmRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+        variables:
+          - name: accountName
+            type: String
+            value: pmon
+          - name: clusterName
+            type: String
+            value: pmon
+        when:
+          pipelineStatus: Success
+          condition: <+pipeline.variables.branch>=="master" && <+pipeline.variables.changeRequest>!=""
+  variables:
+    - name: override_helm_release_namespace
+      type: String
+      value: logging
+    - name: approvalUserGroup
+      type: String
+      value: account.CoreEngEngineer
+    - name: envsRootPath
+      type: String
+      value: terraform/envs
+    - name: branch
+      type: String
+      description: Branch used for deployment
+      value: <+input>.default(master)
+    - name: repoName
+      type: String
+      description: Repo name for JET and SNOW
+      value: logging-opensearch-metrics-exporter
+    - name: jetId
+      type: String
+      description: Jet ID for Jet Evidence
+      value: <+pipeline.variables.gitTag>-<+pipeline.variables.gitSHA>
+    - name: sealId
+      type: String
+      description: Observability Seal ID
+      value: "106605"
+    - name: jetProjectName
+      type: String
+      description: Observability JET Project Name
+      value: ICB106605
+    - name: bitbucketProjectKey
+      type: String
+      description: Bitbucket Project Name
+      value: OBSERVE
+    - name: artifactLocation
+      type: String
+      value: https://artifactory.dyn.prd.aws.jpmchase.net/artifactory/ccb-helm-dev-local/logging-opensearch-metrics-exporter-<+pipeline.variables.gitTag>.tgz
+    - name: gitTag
+      type: String
+      description: logging-opensearch-metrics-exporter published chart version to release
+      required: true
+      value: <+input>
+    - name: projectName
+      type: String
+      description: Repo name with Project ID
+      value: OBSERVE/logging-opensearch-metrics-exporter
+    - name: gitSHA
+      type: String
+      description: Git SHA for Jet Evidence
+      value: <+input>
+    - name: changeRequest
+      type: String
+      description: Approved Change Request for PROD releases
+      value: <+input>.regex((?:\b(?:CHG|INC)\d{8}\b)?)
+    - name: approvalTimeout
+      type: String
+      description: Time to approve terragrunt stage
+      value: 1h
+  allowStageExecutions: true
+  timeout: 3h
