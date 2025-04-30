@@ -24,6 +24,7 @@ pipeline:
                       type: Inline
                       spec:
                         script: |-
+                          echo "for test commit"
                           curl -i -X POST \
                             'https://app.harness.io/ccm/api/governance/enqueueAdhocV2?accountIdentifier=akx2lmy5SnOFm549xPhFKQ' \
                             -H 'Content-Type: application/json' \
