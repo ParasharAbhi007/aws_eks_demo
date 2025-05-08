@@ -1,0 +1,10 @@
+overrides:
+  variables:
+    - name: dff
+      type: String
+      value: dfdss
+      required: false
+    - name: dfes
+      type: String
+      value: rgf
+      required: false
