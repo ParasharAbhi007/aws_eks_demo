@@ -4,5 +4,18 @@ service:
   tags: {}
   serviceDefinition:
     type: Kubernetes
+    spec:
+      manifests:
+        - manifest:
+            identifier: test
+            type: K8sManifest
+            spec:
+              store:
+                type: Harness
+                spec:
+                  files:
+                    - /manidest
+              skipResourceVersioning: false
+              enableDeclarativeRollback: false
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
