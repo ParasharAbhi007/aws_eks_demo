@@ -1,6 +1,154 @@
 featureFlags:
   flags:
   - flag:
+      name: jbjuj
+      identifier: jbjuj
+      description: ""
+      permanent: false
+      spec:
+        type: boolean
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        variations:
+        - identifier: "true"
+          value: "true"
+        - identifier: "false"
+          value: "false"
+      environments:
+      - identifier: helmenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8Env
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8bgEnv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: cdvd
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: jnj
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: canaryenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjj
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+        rules:
+        - priority: 0
+          serve:
+            serveVariation: "false"
+          clauses:
+          - attribute: ""
+            op: segmentMatch
+            values:
+            - newtarget
+        - priority: 1
+          serve:
+            serveVariation: "false"
+          clauses:
+          - attribute: ""
+            op: segmentMatch
+            values:
+            - second
+      - identifier: innovationnonprod
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: terraformdev
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: remoteenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test12
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test123
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: testjs
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: newenv_1
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: ECS_INFRA
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: testnew
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: bjbn
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: newenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: hb_n
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: ssh
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: sam_env
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjjnew
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+  - flag:
       name: js
       identifier: js
       description: ""
@@ -26,11 +174,6 @@ featureFlags:
           onVariation: "true"
           offVariation: "false"
         state: "off"
-      - identifier: test
-        default:
-          onVariation: "true"
-          offVariation: "false"
-        state: "on"
       - identifier: K8bgEnv
         default:
           onVariation: "true"
@@ -56,6 +199,15 @@ featureFlags:
           onVariation: "true"
           offVariation: "false"
         state: "off"
+        rules:
+        - priority: 0
+          serve:
+            serveVariation: "true"
+          clauses:
+          - attribute: ""
+            op: segmentMatch
+            values:
+            - newtarget
       - identifier: innovationnonprod
         default:
           onVariation: "true"
@@ -90,6 +242,11 @@ featureFlags:
           onVariation: "true"
           offVariation: "false"
         state: "off"
+      - identifier: newenv_1
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
       - identifier: ECS_INFRA
         default:
           onVariation: "true"
@@ -99,6 +256,31 @@ featureFlags:
         - targets:
           - identifier: test
           variation: "true"
+      - identifier: testnew
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: bjbn
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: newenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: hb_n
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
       - identifier: ssh
         default:
           onVariation: "true"
@@ -113,6 +295,11 @@ featureFlags:
             op: segmentMatch
             values:
             - ers
+      - identifier: sam_env
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
       - identifier: jjjnew
         default:
           onVariation: "true"
@@ -140,11 +327,6 @@ featureFlags:
           offVariation: "false"
         state: "off"
       - identifier: K8Env
-        default:
-          onVariation: "false"
-          offVariation: "false"
-        state: "off"
-      - identifier: test
         default:
           onVariation: "false"
           offVariation: "false"
@@ -204,7 +386,37 @@ featureFlags:
           onVariation: "false"
           offVariation: "false"
         state: "off"
+      - identifier: newenv_1
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
       - identifier: ECS_INFRA
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: testnew
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: bjbn
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: newenv
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: hb_n
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
+      - identifier: test
         default:
           onVariation: "false"
           offVariation: "false"
@@ -214,9 +426,154 @@ featureFlags:
           onVariation: "false"
           offVariation: "false"
         state: "off"
+      - identifier: sam_env
+        default:
+          onVariation: "false"
+          offVariation: "false"
+        state: "off"
       - identifier: jjjnew
         default:
           onVariation: "false"
+          offVariation: "false"
+        state: "off"
+  - flag:
+      name: My_Test_Flag
+      identifier: My_Test_Flag
+      description: ""
+      permanent: false
+      spec:
+        type: boolean
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        variations:
+        - identifier: "true"
+          value: "true"
+        - identifier: "false"
+          value: "false"
+      environments:
+      - identifier: helmenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8Env
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: K8bgEnv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: cdvd
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: jnj
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: canaryenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjj
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+        rules:
+        - priority: 1
+          serve:
+            serveVariation: "false"
+          clauses:
+          - attribute: ""
+            op: segmentMatch
+            values:
+            - second
+      - identifier: innovationnonprod
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: terraformdev
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: remoteenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test12
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test123
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: testjs
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: newenv_1
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "on"
+      - identifier: ECS_INFRA
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: testnew
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: bjbn
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: newenv
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: hb_n
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: test
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: ssh
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: sam_env
+        default:
+          onVariation: "true"
+          offVariation: "false"
+        state: "off"
+      - identifier: jjjnew
+        default:
+          onVariation: "true"
           offVariation: "false"
         state: "off"
   projectIdentifier: CSETest1
