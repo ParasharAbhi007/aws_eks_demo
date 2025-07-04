@@ -451,6 +451,8 @@ featureFlags:
           value: "true"
         - identifier: prod
           value: "false"
+        - identifier: qa
+          value: "true"
       environments:
       - identifier: helmenv
         default:
