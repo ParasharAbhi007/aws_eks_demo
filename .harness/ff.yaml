@@ -448,9 +448,11 @@ featureFlags:
           offVariation: prod
         variations:
         - identifier: dev
-          value: '{}'
+          value: '{"iconName": "plus"}'
         - identifier: prod
-          value: '{}'
+          value: ' {"iconName": "person.fill.badge.plus"}'
+        - identifier: "off"
+          value: ' {}'
       environments:
       - identifier: helmenv
         default:
