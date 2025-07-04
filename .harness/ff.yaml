@@ -452,7 +452,7 @@ featureFlags:
         - identifier: prod
           value: ' {"iconName": "person.fill.badge.plus"}'
         - identifier: "off"
-          value: ' {"iconName": "plus"}'
+          value: ' {}'
       environments:
       - identifier: helmenv
         default:
