@@ -437,6 +437,137 @@ featureFlags:
           offVariation: "false"
         state: "off"
   - flag:
+      name: mulytivar
+      identifier: mulytivar
+      description: ""
+      permanent: false
+      spec:
+        type: string
+        default:
+          onVariation: dev
+          offVariation: prod
+        variations:
+        - identifier: dev
+          value: "true"
+        - identifier: prod
+          value: "false"
+      environments:
+      - identifier: helmenv
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: K8Env
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: K8bgEnv
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: cdvd
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: jnj
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: canaryenv
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: jjj
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: innovationnonprod
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: terraformdev
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: remoteenv
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: test12
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: test123
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: testjs
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: newenv_1
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: ECS_INFRA
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: testnew
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: bjbn
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: newenv
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: hb_n
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: test
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: ssh
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: sam_env
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+      - identifier: jjjnew
+        default:
+          onVariation: dev
+          offVariation: prod
+        state: "off"
+  - flag:
       name: My_Test_Flag
       identifier: My_Test_Flag
       description: ""
