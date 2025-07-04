@@ -554,6 +554,10 @@ featureFlags:
           onVariation: dev
           offVariation: prod
         state: "off"
+        targetRules:
+        - targets:
+          - identifier: sampletar
+          variation: "off"
       - identifier: ssh
         default:
           onVariation: dev
