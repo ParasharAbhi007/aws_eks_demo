@@ -448,11 +448,11 @@ featureFlags:
           offVariation: prod
         variations:
         - identifier: dev
-          value: "true"
+          value: '{}'
         - identifier: prod
-          value: "false"
+          value: '{}'
         - identifier: qa
-          value: "true"
+          value: '{}'
       environments:
       - identifier: helmenv
         default:
