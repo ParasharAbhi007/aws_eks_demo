@@ -1,0 +1,44 @@
+pipeline:
+  name: t
+  identifier: t
+  projectIdentifier: CSETest1
+  orgIdentifier: AbhiOrg
+  tags: {}
+  stages:
+    - stage:
+        name: c
+        identifier: c
+        description: ""
+        type: Custom
+        spec:
+          environment:
+            environmentRef: ECS_INFRA
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: ee
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: |+
+                          microdnf install -y jq
+                          jq --version  # This verifies the installation
+
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+        tags: {}
+  variables:
+    - name: run
+      type: String
+      description: ""
+      required: false
+      value: <+input>
