@@ -1,5 +1,6 @@
 inputSet:
   name: in
+  tags: {}
   identifier: in
   orgIdentifier: AbhiOrg
   projectIdentifier: CSETest1
@@ -8,4 +9,4 @@ inputSet:
     variables:
       - name: run
         type: String
-        value: <+input>
+        value: <+trigger.targetBranch>
