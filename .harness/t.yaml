@@ -6,42 +6,44 @@ pipeline:
   tags: {}
   stages:
     - stage:
-        name: j
-        identifier: j
+        name: ecs
+        identifier: ecs
         description: ""
         type: Deployment
         spec:
-          deploymentType: Kubernetes
+          deploymentType: ECS
           service:
-            serviceRef: k8service
+            serviceRef: NewECS
+            serviceInputs:
+              serviceDefinition:
+                type: ECS
+                spec:
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: <+input>
+                      sources: <+input>
           environment:
             environmentRef: ECS_INFRA
-            serviceOverrideInputs:
-              variables:
-                - name: varone
-                  type: String
-                  value: <+input>
             deployToAll: false
             infrastructureDefinitions:
-              - identifier: two
+              - identifier: ecs_INFRA
           execution:
             steps:
               - step:
-                  name: Rollout Deployment
-                  identifier: rolloutDeployment
-                  type: K8sRollingDeploy
-                  timeout: 10m
+                  type: EcsRollingDeploy
+                  name: EcsRollingDeploy_1
+                  identifier: EcsRollingDeploy_1
                   spec:
-                    skipDryRun: false
-                    pruningEnabled: false
+                    sameAsAlreadyRunningInstances: false
+                    forceNewDeployment: false
+                  timeout: 10m
             rollbackSteps:
               - step:
-                  name: Rollback Rollout Deployment
-                  identifier: rollbackRolloutDeployment
-                  type: K8sRollingRollback
+                  name: ECS Basic Rollback
+                  identifier: EcsBasicRollback
+                  type: EcsBasicRollback
                   timeout: 10m
-                  spec:
-                    pruningEnabled: false
+                  spec: {}
         tags: {}
         failureStrategies:
           - onFailure:
