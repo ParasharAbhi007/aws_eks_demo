@@ -1,0 +1,29 @@
+inputSet:
+  name: df
+  identifier: df
+  orgIdentifier: AbhiOrg
+  projectIdentifier: CSETest1
+  pipeline:
+    identifier: t
+    stages:
+      - stage:
+          identifier: ecs
+          type: Deployment
+          spec:
+            service:
+              serviceInputs:
+                serviceDefinition:
+                  type: ECS
+                  spec:
+                    artifacts:
+                      primary:
+                        primaryArtifactRef: fv
+                        sources:
+                          - identifier: fv
+                            type: Ecr
+                            spec:
+                              tag: <+json.select("artifactData.metadata[?(@.key == 'tag')].value", <+json.format(<+trigger.payload>)>)>
+    variables:
+      - name: run
+        type: String
+        value: "n "
