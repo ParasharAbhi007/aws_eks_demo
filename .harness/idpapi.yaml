@@ -1,0 +1,13 @@
+apiVersion: harness.io/v1
+kind: API
+type: new
+identifier: api2
+name: api2
+owner: user:account/abhinandan.parashar@harness.io
+spec:
+  lifecycle: prod
+  definition: something
+  ownedBy:
+  - user:account/abhinandan.parashar@harness.io
+metadata:
+  description: something
